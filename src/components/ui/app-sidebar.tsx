@@ -68,13 +68,7 @@ const items = [
         url: "#",
         icon: Search,
         type: "link",
-    },
-    {
-        title: "Settings",
-        url: "#",
-        icon: Settings,
-        type: "link",
-    },
+    }
 ]
 
 export function AppSidebar() {
@@ -142,20 +136,28 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenuButton
-                    size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                    <Avatar className="h-8 w-8 rounded-full">
-                        <AvatarImage src="https://github.com/d7mi-b.png" alt="Abdulrahman" className="rounded-full" />
-                        <AvatarFallback className="rounded-lg">AB</AvatarFallback>
-                    </Avatar>
+                <SidebarMenu>
+                    <SidebarMenuItem
+                        className="flex gap-2 px-4"
+                    >
+                        <Avatar className="h-5 w-5 rounded-full">
+                            <AvatarImage src="https://github.com/d7mi-b.png" alt="Abdulrahman" className="rounded-full" />
+                            <AvatarFallback className="rounded-lg">AB</AvatarFallback>
+                        </Avatar>
 
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-medium">Abdulrahman</span>
-                        <span className="truncate text-xs">eng.abdulrahmanbahyan@gmail.com</span>
-                    </div>
-                </SidebarMenuButton>
+                        <div className="grid flex-1 text-left text-sm leading-tight">
+                            <span className="truncate font-medium">Abdulrahman</span>
+                        </div>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem className="px-2">
+                        <SidebarMenuButton asChild>
+                            <Link href='/'>
+                                <Settings />
+                                <span>Settings</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
     )
