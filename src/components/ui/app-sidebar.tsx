@@ -14,64 +14,67 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import { Calendar, ChevronDown, ChevronsUpDown, Home, Inbox, Search, Settings, ShoppingBasket, Users } from "lucide-react"
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-const items = [
-    {
-        title: "Dashboard",
-        url: "/",
-        icon: Home,
-        type: "link",
-    },
-    {
-        title: "Purchases",
-        url: "/",
-        icon: ShoppingBasket,
-        type: "group",
-        items: [
-            {
-                title: "Orders",
-                url: "/",
-                icon: ShoppingBasket,
-            },
-            {
-                title: "Suppliers",
-                url: "/",
-                icon: Users,
-            },
-            {
-                title: "Sales",
-                url: "/",
-                icon: ShoppingBasket,
-            },
-            {
-                title: "Refunds",
-                url: "/",
-                icon: ShoppingBasket,
-            }
-        ]
-    },
-    {
-        title: "Inbox",
-        url: "#",
-        icon: Inbox,
-        type: "link",
-    },
-    {
-        title: "Calendar",
-        url: "#",
-        icon: Calendar,
-        type: "link",
-    },
-    {
-        title: "Search",
-        url: "#",
-        icon: Search,
-        type: "link",
-    }
-]
-
 export function AppSidebar() {
+    const t = useTranslations();
+
+    const items = [
+        {
+            title: t("Dashboard"),
+            url: "/",
+            icon: Home,
+            type: "link",
+        },
+        {
+            title: t("Purchases"),
+            url: "/",
+            icon: ShoppingBasket,
+            type: "group",
+            items: [
+                {
+                    title: t("Orders"),
+                    url: "/",
+                    icon: ShoppingBasket,
+                },
+                {
+                    title: t("Suppliers"),
+                    url: "/",
+                    icon: Users,
+                },
+                {
+                    title: t("Sales"),
+                    url: "/",
+                    icon: ShoppingBasket,
+                },
+                {
+                    title: t("Refunds"),
+                    url: "/",
+                    icon: ShoppingBasket,
+                }
+            ]
+        },
+        {
+            title: t("Inbox"),
+            url: "#",
+            icon: Inbox,
+            type: "link",
+        },
+        {
+            title: t("Calendar"),
+            url: "#",
+            icon: Calendar,
+            type: "link",
+        },
+        {
+            title: t("Search"),
+            url: "#",
+            icon: Search,
+            type: "link",
+        }
+    ]
+
     return (
         <Sidebar collapsible="icon" className="overflow-x-hidden py-6">
             <SidebarHeader>

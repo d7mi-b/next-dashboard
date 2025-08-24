@@ -4,6 +4,7 @@ import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import Navbar from "@/components/ui/navbar";
+import {NextIntlClientProvider} from 'next-intl';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,15 +31,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SidebarProvider>
-          <AppSidebar />
+        <NextIntlClientProvider>
+          <SidebarProvider>
+            <AppSidebar />
 
-          <main className="w-full px-4">
-            <Navbar />
+            <main className="w-full px-4">
+              <Navbar />
 
-            {children}
-          </main>
-        </SidebarProvider>
+              {children}
+            </main>
+          </SidebarProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
