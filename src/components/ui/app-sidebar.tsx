@@ -9,6 +9,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
 import Link from "next/link";
@@ -43,10 +44,12 @@ const items = [
 
 export function AppSidebar() {
     return (
-        <Sidebar collapsible="icon" className="overflow-x-hidden">
+        <Sidebar collapsible="icon" className="overflow-x-hidden py-6">
             <SidebarHeader>
                 <SidebarMenu>
-                    <SidebarMenuItem>
+                    <SidebarMenuItem className="flex items-center gap-2 p-[2px]">
+                        <SidebarTrigger />
+
                         <h1 className="text-4xl font-semibold px-2">Ply</h1>
                     </SidebarMenuItem>
                 </SidebarMenu>
