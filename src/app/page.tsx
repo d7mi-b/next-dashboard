@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { CalendarSync, FolderSync } from "lucide-react";
+import { CalendarSync, CheckCircle2, FolderSync } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge";
 import WherehousesTab from "@/components/ui/wherehouses-tab";
+import PupolarWherehouse from "@/components/ui/pupolar-wherehouse";
 
 export default async function Home() {
 
@@ -52,29 +53,43 @@ export default async function Home() {
         </section>
       </header>
 
-      <section>
+      
         <Tabs defaultValue="wherehouses" className="w-full">
-          <TabsList>
-            {
-              tabs.map((tab) => (
-                <TabsTrigger key={tab.id} value={tab.id}>
-                  {tab.name}
+          <section className="overflow-x-auto scrollbar-none">
+            <TabsList>
+              {
+                tabs.map((tab) => (
+                  <TabsTrigger key={tab.id} value={tab.id}>
+                    {tab.name}
 
-                  { tab.badge > 0 && <Badge variant="outline">{tab.badge}</Badge> }
-                </TabsTrigger>
-              ))
-            }
-          </TabsList>
+                    { tab.badge > 0 && <Badge variant="outline">{tab.badge}</Badge> }
+                  </TabsTrigger>
+                ))
+              }
+            </TabsList>
+          </section>
           
-          {
-            tabs.map((tab) => (
-              <TabsContent key={tab.id} value={tab.id}>
-                {tab.tab}
-              </TabsContent>
-            ))
-          }
+          <section className="flex gap-8 justify-between max-lg:flex-col">
+            <section className="flex-grow">
+              {
+                tabs.map((tab) => (
+                  <TabsContent key={tab.id} value={tab.id}>
+                    {tab.tab}
+                  </TabsContent>
+                ))
+              }
+            </section>
+
+            <aside className="min-w-[300px] p-4 border rounded-lg h-fit">
+              <PupolarWherehouse />
+
+              <section className="mt-4 flex items-center gap-2">
+                <CheckCircle2 className="text-main" />
+                <p>Stocks are great, good job!</p>
+              </section>
+            </aside>
+          </section>
         </Tabs>
-      </section>
     </section>
   );
 }
