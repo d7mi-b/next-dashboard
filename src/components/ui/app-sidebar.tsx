@@ -11,34 +11,69 @@ import {
     SidebarMenuItem,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible";
+import { Calendar, ChevronDown, ChevronsUpDown, Home, Inbox, Search, Settings, ShoppingBasket, Users } from "lucide-react"
 import Link from "next/link";
 
 const items = [
     {
         title: "Dashboard",
-        url: "#",
+        url: "/",
         icon: Home,
+        type: "link",
+    },
+    {
+        title: "Purchases",
+        url: "/",
+        icon: ShoppingBasket,
+        type: "group",
+        items: [
+            {
+                title: "Orders",
+                url: "/",
+                icon: ShoppingBasket,
+            },
+            {
+                title: "Suppliers",
+                url: "/",
+                icon: Users,
+            },
+            {
+                title: "Sales",
+                url: "/",
+                icon: ShoppingBasket,
+            },
+            {
+                title: "Refunds",
+                url: "/",
+                icon: ShoppingBasket,
+            }
+        ]
     },
     {
         title: "Inbox",
         url: "#",
         icon: Inbox,
+        type: "link",
     },
     {
         title: "Calendar",
         url: "#",
         icon: Calendar,
+        type: "link",
     },
     {
         title: "Search",
         url: "#",
         icon: Search,
+        type: "link",
     },
     {
         title: "Settings",
         url: "#",
         icon: Settings,
+        type: "link",
     },
 ]
 
@@ -55,13 +90,12 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Application</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                        {
-                            items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
+                <SidebarMenu>
+                {
+                    items.map((item) => {
+                        if (item.type === "link") {
+                            return (
+                                <SidebarMenuItem key={item.title} className="px-2">
                                     <SidebarMenuButton asChild>
                                         <Link href={item.url}>
                                             <item.icon />
@@ -69,14 +103,60 @@ export function AppSidebar() {
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
-                            ))
+                            )
+                        } else if (item.type === "group") {
+                            return (
+                                <Collapsible key={item.title} defaultOpen className="group/collapsible">
+                                    <SidebarGroup className="py-0">
+                                        <SidebarGroupLabel asChild>
+                                            <CollapsibleTrigger>
+                                                <section className="flex items-center gap-2">
+                                                    <item.icon className="w-4 h-4" />
+                                                    <span>{item.title}</span>
+                                                </section>
+                                                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                                            </CollapsibleTrigger>
+                                        </SidebarGroupLabel>
+                                        <CollapsibleContent>
+                                            <SidebarGroupContent>
+                                                {
+                                                    item.items && item.items.map((item) => (
+                                                        <SidebarMenuItem key={item.title} className="px-2">
+                                                            <SidebarMenuButton asChild>
+                                                                <Link href={item.url}>
+                                                                    <item.icon />
+                                                                    <span>{item.title}</span>
+                                                                </Link>
+                                                            </SidebarMenuButton>
+                                                        </SidebarMenuItem>
+                                                    ))
+                                                }
+                                            </SidebarGroupContent>
+                                        </CollapsibleContent>
+                                    </SidebarGroup>
+                                </Collapsible>
+                            )
                         }
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-                <SidebarGroup />
+                    })
+                }
+                </SidebarMenu>
             </SidebarContent>
-            <SidebarFooter />
+            <SidebarFooter>
+                <SidebarMenuButton
+                    size="lg"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                    <Avatar className="h-8 w-8 rounded-full">
+                        <AvatarImage src="https://github.com/d7mi-b.png" alt="Abdulrahman" className="rounded-full" />
+                        <AvatarFallback className="rounded-lg">AB</AvatarFallback>
+                    </Avatar>
+
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">Abdulrahman</span>
+                        <span className="truncate text-xs">eng.abdulrahmanbahyan@gmail.com</span>
+                    </div>
+                </SidebarMenuButton>
+            </SidebarFooter>
         </Sidebar>
     )
 }

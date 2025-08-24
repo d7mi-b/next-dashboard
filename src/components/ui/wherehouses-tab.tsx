@@ -12,7 +12,7 @@ export default async function WherehousesTab() {
     });
 
     return (
-        <section className="grid grid-cols-3 gap-4 max-sm:grid-cols-1 max-lg:grid-cols-2">
+        <section className="grid grid-cols-3 gap-4 max-sm:grid-cols-1 max-xl:grid-cols-2">
             <AddWherehouseDialog />
             {
                 wherehouses.map((wherehouse) => (
