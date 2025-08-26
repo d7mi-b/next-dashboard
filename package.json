@@ -24,15 +24,18 @@
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jose": "^6.0.13",
     "lucide-react": "^0.541.0",
     "next": "15.5.0",
+    "next-auth": "^5.0.0-beta.29",
     "next-intl": "^4.3.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.62.0",
     "recharts": "^2.15.4",
     "tailwind-merge": "^3.3.1",
-    "zod": "^4.1.1"
+    "zod": "^4.1.1",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
