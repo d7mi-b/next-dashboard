@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge";
 import WherehousesTab from "@/components/ui/wherehouses-tab";
 import PupolarWherehouse from "@/components/ui/pupolar-wherehouse";
+import PartnersTab from "@/components/ui/patners-tab";
 
 export default async function Home() {
 
@@ -15,9 +16,9 @@ export default async function Home() {
       badge: 12
     },
     {
-      id: "trucks",
-      name: 'Trucks',
-      tab: <WherehousesTab />,
+      id: "partners",
+      name: 'Partners',
+      tab: <PartnersTab />,
       badge: 0
     },
     {
