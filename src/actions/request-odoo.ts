@@ -24,7 +24,10 @@ export async function requestOdoo(params: any) {
             return odooData.error?.message || 'Failed to fetch data';
         }
     } catch (error) {
-        console.log(error);
+        if (axios.isAxiosError(error)) {
+            console.log(error.response?.data);
+        }
+
         return [];
     }
 }

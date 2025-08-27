@@ -24,10 +24,14 @@ export async function POST(req: NextRequest) {
         if (odooData.result) {
             return NextResponse.json({ status: true, data: odooData.result });
         } else {
-            return NextResponse.json({ status: false, message: odooData.error?.message || 'Failed to fetch data' }, { status: 500 });
+            return NextResponse.json({ status: false, message: odooData.error || 'Failed to fetch data' }, { status: 500 });
         }
-    } catch (error) {
-        console.log('Odoo data fetch error:', error);
-        return NextResponse.json({ status: false, message: 'Internal server error' }, { status: 500 });
+    } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+            return NextResponse.json({ status: false, message: error.response?.data }, { status: 500 });
+        }
+
+        console.log('Odoo data fetch error:', error.message);
+        return NextResponse.json({ status: false, message: error.message }, { status: 500 });
     }
 }
