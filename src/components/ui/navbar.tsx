@@ -1,3 +1,5 @@
+"use client";
+
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -7,8 +9,23 @@ import { SidebarMenuButton, SidebarTrigger } from "./sidebar";
 import { Input } from "./input";
 import { Button } from "./button";
 import { File, Search } from "lucide-react";
+import { Dispatch, KeyboardEventHandler, SetStateAction, useEffect, useState } from "react";
 
-export default function Navbar() {
+export default function Navbar({
+    button,
+    setSearch,
+}: {
+    button?: React.ReactNode;
+    setSearch?: Dispatch<SetStateAction<string>>;
+}) {
+    const [currentSearch, setCurrentSearch] = useState<string>("");
+
+    const handleSearch = (e: any) => {
+        if (e.key === "Enter") {
+            setSearch?.(currentSearch);
+        }
+    }
+
     return (
         <NavigationMenu className="max-w-full justify-between py-4">
             <NavigationMenuList>
@@ -17,17 +34,17 @@ export default function Navbar() {
                 </NavigationMenuItem>
                 <NavigationMenuItem className="flex items-center gap-2">
                     <Search />
-                    <Input placeholder="search" type="search" className="border-none" />
+                    <Input placeholder="search" type="search" className="border-none" value={currentSearch} onChange={(e) => setCurrentSearch(e.target.value)} onKeyDown={handleSearch} />
                 </NavigationMenuItem>
             </NavigationMenuList>
-            <NavigationMenuList>
-                <NavigationMenuItem>
-                    <Button className="bg-main">
-                        <File />
-                        <span className="max-sm:hidden">New Request</span>
-                    </Button>
-                </NavigationMenuItem>
-            </NavigationMenuList>
+            {
+                button &&
+                <NavigationMenuList>
+                    <NavigationMenuItem>
+                        { button }
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+            }
         </NavigationMenu>
     );
 }

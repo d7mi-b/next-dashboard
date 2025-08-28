@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge";
 import WherehousesTab from "@/components/ui/wherehouses-tab";
 import PupolarWherehouse from "@/components/ui/pupolar-wherehouse";
-import PartnersTab from "@/components/ui/patners-tab";
+import Navbar from "@/components/ui/navbar";
 
 export default async function Home() {
 
@@ -18,7 +18,7 @@ export default async function Home() {
     {
       id: "partners",
       name: 'Partners',
-      tab: <PartnersTab />,
+      tab: <WherehousesTab />,
       badge: 0
     },
     {
@@ -42,19 +42,21 @@ export default async function Home() {
   ]
 
   return (
-    <section className="p-4">
-      <header className="flex items-center justify-between gap-4 my-6">
-        <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">Stock</h1>
-        
-        <section className="text-sm flex gap-2 items-center">
-          <p className="text-neutral-500">Sync data:</p>
-          <Button variant="outline" size="sm">
-            <CalendarSync /> House Call Pro
-          </Button>
-        </section>
-      </header>
+    <main className="p-4 w-full">
+      <Navbar />
 
-      
+      <section className="p-4">
+        <header className="flex items-center justify-between gap-4 my-6">
+          <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">Stock</h1>
+          
+          <section className="text-sm flex gap-2 items-center">
+            <p className="text-neutral-500">Sync data:</p>
+            <Button variant="outline" size="sm">
+              <CalendarSync /> House Call Pro
+            </Button>
+          </section>
+        </header>
+        
         <Tabs defaultValue="wherehouses" className="w-full">
           <section className="overflow-x-auto scrollbar-none">
             <TabsList>
@@ -91,6 +93,7 @@ export default async function Home() {
             </aside>
           </section>
         </Tabs>
-    </section>
+      </section>
+    </main>
   );
 }

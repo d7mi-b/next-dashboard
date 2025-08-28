@@ -28,6 +28,12 @@ export function AppSidebar() {
             type: "link",
         },
         {
+            title: t("Partners"),
+            url: "/partners",
+            icon: Users,
+            type: "link",
+        },
+        {
             title: t("Purchases"),
             url: "/",
             icon: ShoppingBasket,

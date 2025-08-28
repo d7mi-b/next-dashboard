@@ -8,9 +8,9 @@ import {
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
 import { Partner as PartnerType } from "@/types/partner";
 
-export default function Partner({ partner }: { partner: PartnerType }) {
+export default function Partner({ partner, onClick }: { partner: PartnerType; onClick?: () => void }) {
     return (
-        <Card className="gap-4">
+        <Card className="gap-4" onClick={onClick}>
             <CardContent className="flex items-center gap-4">
                 <section className="w-[40px] h-[40px] bg-main rounded-md flex items-center justify-center text-background">
                     <User />
@@ -23,7 +23,11 @@ export default function Partner({ partner }: { partner: PartnerType }) {
 
             <CardContent>
                 <p className="text-sm text-neutral-500 font-medium mb-4">{partner.email}</p>
-                <p className="text-sm text-neutral-500 font-medium mb-4">{partner.mobile ?? ''} { partner.mobile && partner.phone ? ' / ' : '' } {partner.phone ?? ''}</p>
+                <p className="text-sm text-neutral-500 font-medium mb-4">
+                    {partner.mobile ? partner.mobile : ''}
+                    { partner.mobile && partner.phone ? ' / ' : '' }
+                    { partner.phone ? partner.phone : ''}
+                </p>
             </CardContent>
 
             <CardFooter className="flex items-center justify-between gap-4 mt-8">
