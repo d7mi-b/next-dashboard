@@ -4,6 +4,9 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import getMimeTypeFromBase64 from "@/utils/getMimeTypeFromBase64";
 import PartnerAvatar from "./partner-avatar";
+import { Button } from "./button";
+import Link from "next/link";
+import { Edit, ExternalLink } from "lucide-react";
 
 const columns = [
     {
@@ -66,6 +69,14 @@ export default function PartnersTableView({ partners, setPartner }: { partners: 
                                         </TableCell>
                                     ))
                                 }
+                                <TableCell>
+                                    <Button variant="outline">
+                                        <Link href={`/partners/${partner.id}`}>
+                                            <ExternalLink />
+                                        </Link>
+                                    </Button>
+                                    <Button variant="outline" onClick={() => setPartner(partner)}><Edit /></Button>
+                                </TableCell>
                             </TableRow>
                         ))
                     }
