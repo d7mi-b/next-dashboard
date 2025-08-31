@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
         const odooData = await odooResponse.data;
 
-        if (odooData.result) {
+        if (odooData.result !== null) {
             return NextResponse.json({ status: true, data: odooData.result });
         } else {
             console.log(odooData.error);

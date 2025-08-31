@@ -147,16 +147,35 @@ export default function usePartners() {
     }
 
     async function getTotalPages() {
+        let domain = [];
+    
+        if (search) {
+            domain.push('|', '|', ['name', 'ilike', search], ['email', 'ilike', search], ['phone', 'ilike', search]);
+        }
+
+        if (city) {
+            domain.push(['city', 'ilike', city]);
+        }
+        
+        if (country) {
+            domain.push(['country_id', 'ilike', country]);
+        }
+        
+        // Correct logic for customer and supplier rank filters.
+        // Use an OR condition if both are checked to find partners that are either one.
+        if (isCustomer && isSupplier) {
+            domain.push('|', ['customer_rank', '>', 0], ['supplier_rank', '>', 0]);
+        } else if (isCustomer) {
+            domain.push(['customer_rank', '>', 0]);
+        } else if (isSupplier) {
+            domain.push(['supplier_rank', '>', 0]);
+        }
+
         const result = await requestOdoo({
             "model": "res.partner",
             "method": "search_count",
             "args": [
-                search ? [
-                    '|', '|',
-                    ['name', 'ilike', search],
-                    ['email', 'ilike', search],
-                    ['phone', 'ilike', search],
-                ] : [],
+                domain
             ],
             "kwargs": {}
         });

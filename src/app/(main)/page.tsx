@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import WherehousesTab from "@/components/ui/wherehouses-tab";
 import PupolarWherehouse from "@/components/ui/pupolar-wherehouse";
 import Navbar from "@/components/ui/navbar";
+import StatisticsPartners from "@/components/ui/statistics-partners";
 
 export default async function Home() {
 
@@ -44,6 +45,10 @@ export default async function Home() {
   return (
     <main className="p-4 w-full">
       <Navbar />
+
+      <section className="p-4">
+        <StatisticsPartners />
+      </section>
 
       <section className="p-4">
         <header className="flex items-center justify-between gap-4 my-6">
