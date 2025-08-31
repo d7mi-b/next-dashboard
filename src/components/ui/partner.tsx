@@ -1,16 +1,37 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
 import { Partner as PartnerType } from "@/types/partner";
 import PartnerAvatar from "./partner-avatar";
+import Link from "next/link";
+import { Badge } from "./badge";
+import { Button } from "./button";
+import { Edit, ExternalLink } from "lucide-react";
 
 export default function Partner({ partner, onClick }: { partner: PartnerType; onClick?: () => void }) {
     return (
-        <Card className="gap-4" onClick={onClick}>
-            <CardContent className="flex items-center gap-4">
-                <PartnerAvatar image={partner.image_1920} name={partner.name} />
+        <Card className="gap-4">
+            <CardContent className="flex items-center justify-between gap-4">
+                <Link href={`/partners/${partner.id}`}>
+                    <PartnerAvatar image={partner.image_1920} name={partner.name} />
+                </Link>
+
+                <section className="flex items-center gap-2">
+                    <Button variant="outline">
+                        <Link href={`/partners/${partner.id}`}>
+                            <ExternalLink />
+                        </Link>
+                    </Button>
+                    <Button variant="outline" onClick={onClick}><Edit /></Button>
+                </section>
             </CardContent>
 
             <CardHeader className="flex items-center justify-between gap-4">
-                <CardTitle className="text-xl font-semibold">{partner.name}</CardTitle>
+                <CardTitle className="text-xl font-semibold flex items-center gap-2">
+                    <Link href={`/partners/${partner.id}`}>
+                        {partner.name}
+                    </Link>
+
+                    <Badge variant="outline">{partner.customer_rank > 0 ? "Customer" : partner.supplier_rank > 0 ? "Supplier" : "Partner"}</Badge>
+                </CardTitle>
             </CardHeader>
 
             <CardContent>

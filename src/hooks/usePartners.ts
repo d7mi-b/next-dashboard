@@ -1,5 +1,5 @@
 import { requestOdoo } from "@/actions/request-odoo";
-import { AddPartnerFormSchema } from "@/lib/definitions";
+import { AddPartnerFormSchema, EditPartnerFormSchema } from "@/lib/definitions";
 import { Partner } from "@/types/partner";
 import { KeyboardEventHandler, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -48,14 +48,12 @@ export default function usePartners() {
             domain.push(['supplier_rank', '>', 0]);
         }
 
-        console.log(['customer_rank', (isCustomer ? '>' : '='), 0],
-                    ['supplier_rank', (isSupplier ? '>' : '='), 0])
         const result = await requestOdoo({
             "model": "res.partner",
             "method": "search_read",
             "args": [
                 domain,
-                ["name", "email", "phone", "mobile", "create_date", "image_1920", "customer_rank", "supplier_rank"]
+                ["name", "email", "phone", "mobile", "create_date", "image_1920", "customer_rank", "supplier_rank", "child_ids"]
             ],
             "kwargs": {
                 "limit": 10,
@@ -99,25 +97,25 @@ export default function usePartners() {
         }
     }
 
-    async function update(values: z.infer<typeof AddPartnerFormSchema>) {
-        if (!partner) {
-            toast("Please select a partner to edit.");
-            return;
-        }
-
+    async function update(values: z.infer<typeof EditPartnerFormSchema>) {
         setIsSaving(true);
+
+        let data: any = {
+            "name": values.name,
+            "email": values.email,
+            "phone": values.phone,
+        };
+
+        if (values.image_1920) {
+            data.image_1920 = values.image_1920;
+        }
 
         const result = await requestOdoo({
             "model": "res.partner",
             "method": "write",
             "args": [
-                [partner.id],
-                {
-                    "name": values.name,
-                    "email": values.email,
-                    "phone": values.phone,
-                    "image_1920": values.image_1920,
-                }
+                [values.id],
+                data
             ],
             "kwargs": {}
         });
