@@ -30,6 +30,7 @@ export default function Partner({ partner, onClick }: { partner: PartnerType; on
                         {partner.name}
                     </Link>
 
+                    <Badge variant="default">{partner.is_company ? "Company" : "Individual"}</Badge>
                     <Badge variant="outline">{partner.customer_rank > 0 ? "Customer" : partner.supplier_rank > 0 ? "Supplier" : "Partner"}</Badge>
                 </CardTitle>
             </CardHeader>

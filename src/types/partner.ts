@@ -14,4 +14,5 @@ export type Partner = {
     country_id: [number, string] | false;
     city: string | false;
     child_ids: number[];
+    is_company: boolean;
 }

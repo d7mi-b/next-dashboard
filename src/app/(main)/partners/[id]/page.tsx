@@ -49,6 +49,7 @@ export default async function Partner({
                         <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance flex items-center gap-2">
                             {partner.name}
 
+                            <Badge variant="default">{partner.is_company ? "Company" : "Individual"}</Badge>
                             <Badge variant="outline">{partner.customer_rank > 0 ? "Customer" : partner.supplier_rank > 0 ? "Supplier" : "Partner"}</Badge>
                         </h1>
 

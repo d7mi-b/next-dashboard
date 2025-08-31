@@ -53,7 +53,7 @@ export default function usePartners() {
             "method": "search_read",
             "args": [
                 domain,
-                ["name", "email", "phone", "mobile", "create_date", "image_1920", "customer_rank", "supplier_rank", "child_ids"]
+                ["name", "email", "phone", "mobile", "create_date", "image_1920", "customer_rank", "supplier_rank", "child_ids", "is_company"]
             ],
             "kwargs": {
                 "limit": 10,
