@@ -2,6 +2,7 @@ import { requestOdoo } from "@/actions/request-odoo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ChildPartner from "@/components/ui/child-partner";
+import DeletePartnerDialogPage from "@/components/ui/delete-partner-dialog-page";
 import EditPartnerDialogPage from "@/components/ui/edit-partner-dialog-page";
 import { ChildPartner as ChildPartnerType } from "@/types/child-partner";
 import { Partner as PartnerType } from "@/types/partner";
@@ -54,7 +55,7 @@ export default async function Partner({
                         <section className="flex items-center gap-2">
                             <section className="flex items-center gap-2">
                                 <EditPartnerDialogPage partner={partner} />
-                                <Button variant="outline"><Trash /></Button>
+                                <DeletePartnerDialogPage partner={partner} />
                             </section>
                         </section>
                     </header>

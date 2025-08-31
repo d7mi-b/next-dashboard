@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
         if (odooData.result) {
             return NextResponse.json({ status: true, data: odooData.result });
         } else {
+            console.log(odooData.error);
             const message = typeof odooData.error === 'string'
                 ? odooData.error
                 : odooData.error?.message ?? 'Failed to fetch data';
