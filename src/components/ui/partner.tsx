@@ -1,20 +1,12 @@
-import { User } from "lucide-react";
-import { Badge } from "./badge";
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
 import { Partner as PartnerType } from "@/types/partner";
+import PartnerAvatar from "./partner-avatar";
 
 export default function Partner({ partner, onClick }: { partner: PartnerType; onClick?: () => void }) {
     return (
         <Card className="gap-4" onClick={onClick}>
             <CardContent className="flex items-center gap-4">
-                <section className="w-[40px] h-[40px] bg-main rounded-md flex items-center justify-center text-background">
-                    <User />
-                </section>
+                <PartnerAvatar image={partner.image_1920} name={partner.name} />
             </CardContent>
 
             <CardHeader className="flex items-center justify-between gap-4">
@@ -24,9 +16,9 @@ export default function Partner({ partner, onClick }: { partner: PartnerType; on
             <CardContent>
                 <p className="text-sm text-neutral-500 font-medium mb-4">{partner.email}</p>
                 <p className="text-sm text-neutral-500 font-medium mb-4">
-                    {partner.mobile ? partner.mobile : ''}
+                    {partner.mobile !== "false" ? partner.mobile : ''}
                     { partner.mobile && partner.phone ? ' / ' : '' }
-                    { partner.phone ? partner.phone : ''}
+                    { partner.phone !== "false" ? partner.phone : ''}
                 </p>
             </CardContent>
 

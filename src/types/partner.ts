@@ -8,4 +8,5 @@ export type Partner = {
     isDefault: boolean;
     create_date: Date;
     updated_date: Date;
+    image_1920: Base64URLString;
 }

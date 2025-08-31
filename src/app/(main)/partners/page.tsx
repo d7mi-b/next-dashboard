@@ -1,21 +1,46 @@
 "use client";
 
-import EmptyResult from "@/components/empty-result";
+import EmptyResult from "@/components/ui/empty-result";
 import AddPartnerDialog from "@/components/ui/add-partners-dialog";
 import AppPagination from "@/components/ui/app-pagination";
 import EditPartnerDialog from "@/components/ui/edit-partners-dialog";
 import Navbar from "@/components/ui/navbar";
-import Partner from "@/components/ui/partner";
 import usePartners from "@/hooks/usePartners";
+import PartnersCardView from "@/components/ui/partners-card-view";
+import { useState } from "react";
+import PartnersTableView from "@/components/ui/partners-table-view";
+import { Switch } from "@/components/ui/switch";
+import PartnersFilters from "@/components/ui/partners-filters";
 
 export default function Partners() {
-    const { partners, page, totalPages, nextPage, prevPage, setPage, create, update, partner, setPartner, isSaving, setSearch } = usePartners();
+    const { 
+        partners, 
+        page, 
+        totalPages, 
+        nextPage, 
+        prevPage, 
+        setPage, 
+        partner, 
+        setPartner, 
+        setSearch, 
+        order, 
+        setOrder,
+        isCustomer,
+        setIsCustomer,
+        isSupplier,
+        setIsSupplier,
+        country,
+        setCountry,
+        city,
+        setCity
+    } = usePartners();
+    const [cardsView, setCardsView] = useState<boolean>(false);
 
     return (
         <main className="p-4 w-full">
             <Navbar 
                 button={
-                    <AddPartnerDialog isSaving={isSaving} onSubmit={create} />
+                    <AddPartnerDialog />
                 } 
                 setSearch={setSearch}
             />
@@ -23,25 +48,51 @@ export default function Partners() {
             <section className="p-4">
                 <header className="flex items-center justify-between gap-4 my-6">
                     <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">Partners</h1>
+
+                    <section className="flex items-center gap-2">
+                        <section className="flex items-center gap-2">
+                            <span>Cards</span>
+                            <Switch
+                                checked={cardsView}
+                                onCheckedChange={() => setCardsView(!cardsView)}
+                            />
+                            <span>List</span>
+                        </section>
+
+                        <section>
+                            <PartnersFilters
+                                country={country}
+                                setCountry={setCountry}
+                                city={city}
+                                setCity={setCity}
+                                isCustomer={isCustomer}
+                                setIsCustomer={setIsCustomer}
+                                isSupplier={isSupplier}
+                                setIsSupplier={setIsSupplier}
+                                order={order}
+                                setOrder={setOrder}
+                            />
+                        </section>
+                    </section>
                 </header>
 
                 {
                     partners.length > 0 &&
                     <section>
-                        <section className="grid grid-cols-3 gap-4 max-sm:grid-cols-1 max-xl:grid-cols-2">
-                            {
-                                partners.map((partner) => (
-                                    <Partner key={partner.id} partner={partner} onClick={() => setPartner(partner)} />
-                                ))
-                            }
-                        </section>
+                        {
+                            !cardsView && <PartnersCardView partners={partners} setPartner={setPartner} />
+                        }
+
+                        {
+                            cardsView && <PartnersTableView partners={partners} setPartner={setPartner} />
+                        }
 
                         <section className="mt-4 flex items-center justify-center gap-2">
                             <AppPagination page={page} totalPages={totalPages} onNextPage={nextPage} onPrevPage={prevPage} setPage={setPage} />
                         </section>
 
                         {
-                            partner && <EditPartnerDialog isSaving={isSaving} onSubmit={update} partner={partner} setPartner={setPartner} />
+                            partner && <EditPartnerDialog partner={partner} setPartner={setPartner} />
                         }
                     </section>
                 }

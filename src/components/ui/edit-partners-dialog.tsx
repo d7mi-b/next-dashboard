@@ -18,6 +18,7 @@ import {
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -26,30 +27,28 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
 import { AddPartnerFormSchema } from "@/lib/definitions";
 import { Partner } from "@/types/partner";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import usePartners from "@/hooks/usePartners";
 
 export default function EditPartnerDialog({
-    onSubmit = (values: z.infer<typeof AddPartnerFormSchema>) => { },
-    isSaving = false,
     partner,
     setPartner
 }: {
-    onSubmit?: (values: z.infer<typeof AddPartnerFormSchema>) => void;
-    isSaving?: boolean;
     partner: Partner;
     setPartner: Dispatch<SetStateAction<Partner | undefined>>;
 }) {
+    const { update, isSaving } = usePartners();
     const [currentOpen, setCurrentOpen] = useState<boolean>(false);
+    const [image, setImage] = useState<string>("");
 
     const form = useForm<z.infer<typeof AddPartnerFormSchema>>({
         resolver: zodResolver(AddPartnerFormSchema),
         defaultValues: {
-            name: partner?.name ?? "",
-            email: partner?.email ?? "",
-            phone: partner?.phone ?? "",
+            name: partner?.name ? partner.name : "",
+            email: partner?.email ? partner.email : "",
+            phone: partner?.phone ? partner.phone : "",
         },
     });
 
@@ -59,19 +58,29 @@ export default function EditPartnerDialog({
             label: "Name",
             type: "text",
             required: true,
+            description: null,
         },
         {
             name: "email",
             label: "Email",
             type: "email",
             required: true,
+            description: null
         },
         {
             name: "phone",
             label: "Phone",
             type: "text",
             required: true,
+            description: "Please enter a valid Saudi number or Yemen number.",
         },
+        {
+            name: "image_1920",
+            label: "Image",
+            type: "file",
+            required: false,
+            description: null
+        }
     ];
 
     useEffect(() => {
@@ -85,6 +94,31 @@ export default function EditPartnerDialog({
     const handleClose = () => {
         setCurrentOpen(false); 
         setPartner(undefined);
+        setImage("");
+    }
+
+    const handleSubmit = async (values: z.infer<typeof AddPartnerFormSchema>) => {
+        values.image_1920 = image;
+
+        if (!values.image_1920) {
+            form.setError("image_1920", { type: "required", message: "Image field is required." });
+            return;
+        }
+
+        const result: boolean = await update(values);
+
+        if (result) {
+            handleClose();
+        }
+    }
+
+    const handleImageChange = (event: any) => {
+        const reader: any = new FileReader();
+        reader.readAsDataURL(event.target.files[0]);
+        reader.onloadend = async () => {
+            const base64Image = await reader.result.split(',')[1];
+            setImage(base64Image);
+        }
     }
 
     return (
@@ -109,8 +143,23 @@ export default function EditPartnerDialog({
                                             <FormItem>
                                                 <FormLabel>{f.label}</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder={f.label} type={f.type} {...field} />
+                                                    <Input 
+                                                        placeholder={f.label} 
+                                                        type={f.type}
+                                                        {...field}
+                                                        value={field.value}
+                                                        onChange={(event) => {
+                                                            if (event.target.files && event.target.files[0]) {
+                                                                handleImageChange(event);
+                                                            } else {
+                                                                return field.onChange(event.target.value);
+                                                            }
+                                                        }}
+                                                    />
                                                 </FormControl>
+                                                {
+                                                    f.description && <FormDescription>{f.description}</FormDescription>
+                                                }
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -122,7 +171,7 @@ export default function EditPartnerDialog({
                             <DialogClose asChild onClick={handleClose}>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit" disabled={isSaving} onClick={form.handleSubmit(onSubmit)}>Save changes</Button>
+                            <Button type="submit" disabled={isSaving} onClick={form.handleSubmit(handleSubmit)}>Save changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </form>

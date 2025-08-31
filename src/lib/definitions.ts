@@ -15,6 +15,7 @@ export const AddPartnerFormSchema = z.object({
     name: z.string().min(1, { message: "Name field is required." }),
     email: z.string().email({ message: "Invalid email address." }),
     phone: z.string().regex(/^((\+|00)?9665\d{8}|(\+|00)?9677[01378]\d{7}|05\d{8}|7[01378]\d{7})$/, { message: "Invalid phone number." }),
+    image_1920: z.string().optional(),
 });
 
 export type AddPartnerActionState = {

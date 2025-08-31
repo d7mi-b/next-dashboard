@@ -12,31 +12,59 @@ export default function usePartners() {
     const [partner, setPartner] = useState<Partner>();
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [search, setSearch] = useState<string>("");
+    const [order, setOrder] = useState<string>("desc");
+    const [isCustomer, setIsCustomer] = useState<boolean>(false);
+    const [isSupplier, setIsSupplier] = useState<boolean>(false);
+    const [country, setCountry] = useState("");
+    const [city, setCity] = useState("");
 
     useEffect(() => {
         fetchPartners();
         getTotalPages();
-    }, [page, search]);
+    }, [page, search, order, city, country, isCustomer, isSupplier]);
 
     async function fetchPartners() {
+        let domain = [];
+    
+        if (search) {
+            domain.push('|', '|', ['name', 'ilike', search], ['email', 'ilike', search], ['phone', 'ilike', search]);
+        }
+
+        if (city) {
+            domain.push(['city', 'ilike', city]);
+        }
+        
+        if (country) {
+            domain.push(['country_id', 'ilike', country]);
+        }
+        
+        // Correct logic for customer and supplier rank filters.
+        // Use an OR condition if both are checked to find partners that are either one.
+        if (isCustomer && isSupplier) {
+            domain.push('|', ['customer_rank', '>', 0], ['supplier_rank', '>', 0]);
+        } else if (isCustomer) {
+            domain.push(['customer_rank', '>', 0]);
+        } else if (isSupplier) {
+            domain.push(['supplier_rank', '>', 0]);
+        }
+
+        console.log(['customer_rank', (isCustomer ? '>' : '='), 0],
+                    ['supplier_rank', (isSupplier ? '>' : '='), 0])
         const result = await requestOdoo({
             "model": "res.partner",
             "method": "search_read",
             "args": [
-                search ? [
-                    '|', '|',
-                    ['name', 'ilike', search],
-                    ['email', 'ilike', search],
-                    ['phone', 'ilike', search],
-                ] : [],
-                ["name", "email", "phone", "mobile", "create_date"]
+                domain,
+                ["name", "email", "phone", "mobile", "create_date", "image_1920", "customer_rank", "supplier_rank"]
             ],
             "kwargs": {
-                "limit": 5,
-                "offset": (page - 1) * 5,
-                "order": "create_date desc"
+                "limit": 10,
+                "offset": (page - 1) * 10,
+                "order": `create_date ${order}`
             }
         });
+
+        console.log(result);
 
         setPartners(result);
     }
@@ -52,6 +80,7 @@ export default function usePartners() {
                     "name": values.name,
                     "email": values.email,
                     "phone": values.phone,
+                    "image_1920": values.image_1920,
                 }]
             ],
             "kwargs": {}
@@ -87,6 +116,7 @@ export default function usePartners() {
                     "name": values.name,
                     "email": values.email,
                     "phone": values.phone,
+                    "image_1920": values.image_1920,
                 }
             ],
             "kwargs": {}
@@ -101,9 +131,9 @@ export default function usePartners() {
                 toast("Partner has been updated successfully.");
                 setPartner(undefined);
             }
-
-            return result;
         }
+
+        return result;
     }
 
     function nextPage() {
@@ -134,7 +164,7 @@ export default function usePartners() {
         });
 
         if (result) {
-            setTotalPages(Math.ceil(result / 5));
+            setTotalPages(Math.ceil(result / 10));
         }
     }
 
@@ -150,6 +180,16 @@ export default function usePartners() {
         setPartner,
         isSaving,
         update,
-        setSearch
+        setSearch,
+        order,
+        setOrder,
+        isCustomer,
+        setIsCustomer,
+        isSupplier,
+        setIsSupplier,
+        country,
+        setCountry,
+        city,
+        setCity
     }
 }
