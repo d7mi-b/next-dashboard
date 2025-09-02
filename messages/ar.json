@@ -1,7 +1,7 @@
 {
     "Stock": "مخزون",
-    "Wherehouses": "مستودعات",
-    "Wherehouse": "مستودع",
+    "warehouses": "مستودعات",
+    "warehouse": "مستودع",
     "Purchases": "المشتريات",
     "Dashboard": "لوحة التحكم",
     "Inbox": "صندوق الوارد",

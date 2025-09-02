@@ -6,9 +6,9 @@ import {
     AvatarImage,
 } from "@/components/ui/avatar"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
-import { Wherehouse as WherehouseType } from "@/types/wherehouse";
+import { warehouse as warehouseType } from "@/types/warehouse";
 
-export default function Wherehouse({ wherehouse }: { wherehouse: WherehouseType }) {
+export default function Warehouse({ warehouse }: { warehouse: warehouseType }) {
     return (
         <Card className="gap-4">
             <CardContent className="flex items-center gap-4">
@@ -16,20 +16,20 @@ export default function Wherehouse({ wherehouse }: { wherehouse: WherehouseType 
                     <Home />
                 </section>
 
-                <p className="font-medium text-main">{wherehouse.items} Items</p>
+                <p className="font-medium text-main">{warehouse.items} Items</p>
             </CardContent>
 
             <CardHeader className="flex items-center justify-between gap-4">
-                <CardTitle className="text-xl font-semibold">{wherehouse.name}</CardTitle>
+                <CardTitle className="text-xl font-semibold">{warehouse.name}</CardTitle>
 
                 {
-                    wherehouse.isDefault &&
+                    warehouse.isDefault &&
                     <Badge variant="outline">Default</Badge>
                 }
             </CardHeader>
 
             <CardContent>
-                <p className="text-sm text-neutral-500 font-medium mb-4">{wherehouse.address}</p>
+                <p className="text-sm text-neutral-500 font-medium mb-4">{warehouse.address}</p>
 
                 <div className="*:data-[slot=avatar]:ring-background flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:grayscale">
                     <Avatar>
@@ -54,8 +54,8 @@ export default function Wherehouse({ wherehouse }: { wherehouse: WherehouseType 
                 <p className="text-sm text-neutral-500">Last updated:</p>
 
                 <section className="overflow-hidden [&>p]:w-[48px] [&>p]:h-[32px] rounded-full flex [&>p]:flex [&>p]:items-center [&>p]:justify-center">
-                    <p className="bg-orange-100 text-orange-500 text-center font-medium">{new Date(wherehouse.updatedAt).getDate()}</p>
-                    <p className="bg-red-100 text-red-500 text-center font-medium">{new Date(wherehouse.updatedAt).getMonth() + 1}</p>
+                    <p className="bg-orange-100 text-orange-500 text-center font-medium">{new Date(warehouse.updatedAt).getDate()}</p>
+                    <p className="bg-red-100 text-red-500 text-center font-medium">{new Date(warehouse.updatedAt).getMonth() + 1}</p>
                 </section>
             </CardFooter>
         </Card>

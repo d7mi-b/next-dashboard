@@ -96,7 +96,6 @@ export default function EditPartnerDialogPage({
 
         const result: boolean = await update(values);
 
-        console.log("RESULT: ", result);
         if (result) {
             handleClose();
         }

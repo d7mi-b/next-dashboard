@@ -1,7 +1,8 @@
 import { LoginFormSchema } from "@/lib/definitions";
 import axios from "axios";
-import { redirect } from "next/navigation";
 import { z } from "zod";
+import { requestOdoo } from "./request-odoo";
+import { redirect } from "next/navigation";
 
 export async function login(values: z.infer<typeof LoginFormSchema>) {
     // Call the provider or db to create a user...
@@ -9,8 +10,19 @@ export async function login(values: z.infer<typeof LoginFormSchema>) {
         .then((res) => res.data)
         .catch((err) => console.log("Error", err));
 
-    console.log(result);
     if (result.status) {
+        const [userGroupIds] = await requestOdoo({
+            "model": "res.users",
+            "method": "read",
+            "args": [
+                [result.uid],
+                ["groups_id"]
+            ],
+            "kwargs": {}
+        });
+
+        const permission = userGroupIds.groups_id;
+
         redirect('/');
     } else {
         return {

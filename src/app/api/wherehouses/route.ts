@@ -1,7 +1,7 @@
-import { Wherehouse } from '@/types/wherehouse';
+import { warehouse } from '@/types/warehouse';
 
 export async function GET() {
-  const wherehouses: Wherehouse[] = [
+  const warehouses: warehouse[] = [
     {
       id: 1,
       name: 'Main Warehouse',
@@ -31,5 +31,5 @@ export async function GET() {
     },
   ]
 
-  return Response.json(wherehouses);
+  return Response.json(warehouses);
 }

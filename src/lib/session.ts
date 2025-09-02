@@ -21,12 +21,11 @@ export async function decrypt(token: string) {
 
         return payload;
     } catch (error) {
-        console.log('Error', error);
         return null;
     }
 }
 
-export async function createSession(session_id: string) {
+export async function createSession(session_id: string, permissions?: number[]) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     const session = await encrypt({ session_id, expiresAt })
     const cookieStore = await cookies()

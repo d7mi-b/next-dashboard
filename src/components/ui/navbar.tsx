@@ -29,7 +29,7 @@ export default function Navbar({
     return (
         <NavigationMenu className="max-w-full justify-between py-4">
             <NavigationMenuList>
-                <NavigationMenuItem className="md:hidden">
+                <NavigationMenuItem className="xl:hidden">
                     <SidebarTrigger />
                 </NavigationMenuItem>
                 <NavigationMenuItem className="flex items-center gap-2">

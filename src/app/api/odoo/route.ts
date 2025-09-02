@@ -4,6 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
     const { params, sessionId } = await req.json();
 
+    if (!process.env.ODOO_APP_URL) {
+        console.error('Missing ODOO_APP_URL');
+        return NextResponse.json({ status: false, message: 'Service misconfigured' }, { status: 500 });
+    }
+
     try {
         // Example: Fetching partners
         const odooResponse = await axios.post(`${process.env.ODOO_APP_URL}/web/dataset/call_kw`, {
@@ -19,12 +24,11 @@ export async function POST(req: NextRequest) {
             }
         );
 
-        const odooData = await odooResponse.data;
+        const odooData = odooResponse.data;
 
-        if (odooData.result !== null) {
+        if (odooData.result != null) {
             return NextResponse.json({ status: true, data: odooData.result });
         } else {
-            console.log(odooData.error);
             const message = typeof odooData.error === 'string'
                 ? odooData.error
                 : odooData.error?.message ?? 'Failed to fetch data';

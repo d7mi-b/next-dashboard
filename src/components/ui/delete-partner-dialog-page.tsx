@@ -40,12 +40,11 @@ export default function DeletePartnerDialogPage({
             "kwargs": {}
         });
 
-        console.log("DELETE RESULT: ", result);
         if (result) {
             handleClose();
             redirect("/partners");
         } else {
-            toast("Failed to delete partner.");
+            toast.error("Failed to delete partner.");
         }
     }
 

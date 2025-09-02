@@ -1,7 +1,7 @@
 {
     "Stock": "Stock",
-    "Wherehouses": "Wherehouses",
-    "Wherehouse": "Wherehouse",
+    "warehouses": "warehouses",
+    "warehouse": "warehouse",
     "Purchases": "Purchases",
     "Dashboard": "Dashboard",
     "Inbox": "Inbox",

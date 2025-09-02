@@ -1,4 +1,4 @@
-export const addWherehouseformFields = [
+export const addwarehouseformFields = [
     {
         id: "name",
         name: "name",

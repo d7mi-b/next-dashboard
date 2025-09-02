@@ -21,9 +21,13 @@ export async function POST(req: Request) {
 
             await createSession(sessionId);
 
-            return NextResponse.json({ status: true, message: 'Login successful' });
+            return NextResponse.json({ status: true, message: 'Login successful', uid: odooData.result.uid });
         } else {
-            return NextResponse.json({ status: false, message: odooData.error?.message || 'Login failed' }, { status: 401 });
+            console.error('Odoo auth failed:', odooData?.error ?? odooData);
+            return NextResponse.json(
+                { status: false, message: 'Invalid credentials' },
+                { status: 401 }
+            );
         }
     } catch (error) {
         console.error('Odoo login error:', error);

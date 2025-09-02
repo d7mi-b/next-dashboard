@@ -53,11 +53,11 @@ const materials = [
     },
 ]
 
-export default function PupolarWherehouse() {
+export default function PupolarWarehouse() {
     return (
         <section>
             <header className="flex items-center justify-between gap-4">
-                <h3 className="font-semibold text-md">Papular Wherehouses</h3>
+                <h3 className="font-semibold text-md">Papular warehouses</h3>
 
                 <Select defaultValue="week">
                     <SelectTrigger className="w-fit font-semibold border-none">

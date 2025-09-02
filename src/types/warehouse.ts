@@ -1,4 +1,4 @@
-export interface Wherehouse {
+export interface warehouse {
     id: number;
     name: string;
     address: string;

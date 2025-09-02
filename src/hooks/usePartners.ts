@@ -62,8 +62,6 @@ export default function usePartners() {
             }
         });
 
-        console.log(result);
-
         setPartners(result);
     }
 
@@ -90,7 +88,7 @@ export default function usePartners() {
             if (result) {
                 await fetchPartners();
 
-                toast("Partner created successfully.");
+                toast.success("Partner created successfully.");
             }
 
             return result;
@@ -126,7 +124,7 @@ export default function usePartners() {
             if (result) {
                 await fetchPartners();
 
-                toast("Partner has been updated successfully.");
+                toast.success("Partner has been updated successfully.");
                 setPartner(undefined);
             }
         }
@@ -180,8 +178,8 @@ export default function usePartners() {
             "kwargs": {}
         });
 
-        if (result) {
-            setTotalPages(Math.ceil(result / 10));
+        if (result !== undefined && result !== null) {
+            setTotalPages(Math.max(1, Math.ceil(result / 10)));
         }
     }
 

@@ -1,50 +1,60 @@
 import { Button } from "@/components/ui/button";
-import { CalendarSync, CheckCircle2, FolderSync } from "lucide-react";
+import { CalendarSync, CheckCircle2, FolderSync, Plus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge";
-import WherehousesTab from "@/components/ui/wherehouses-tab";
-import PupolarWherehouse from "@/components/ui/pupolar-wherehouse";
+import WarehousesTab from "@/components/ui/warehouses-tab";
+import Pupolarwarehouse from "@/components/ui/pupolar-warehouse";
 import Navbar from "@/components/ui/navbar";
 import StatisticsPartners from "@/components/ui/statistics-partners";
+import Link from "next/link";
 
 export default async function Home() {
 
   const tabs = [
     {
-      id: "wherehouses",
-      name: 'Wherehouses',
-      tab: <WherehousesTab />,
+      id: "warehouses",
+      name: 'warehouses',
+      tab: <WarehousesTab />,
       badge: 12
     },
     {
       id: "partners",
       name: 'Partners',
-      tab: <WherehousesTab />,
+      tab: <WarehousesTab />,
       badge: 0
     },
     {
       id: "fields-requests",
       name: 'Fields Requests',
-      tab: <WherehousesTab />,
+      tab: <WarehousesTab />,
       badge: 5
     },
     {
       id: "pick-lists",
       name: 'Pick Lists',
-      tab: <WherehousesTab />,
+      tab: <WarehousesTab />,
       badge: 0
     },
     {
       id: "activity",
       name: 'Activity',
-      tab: <WherehousesTab />,
+      tab: <WarehousesTab />,
       badge: 0
     }
   ]
 
   return (
     <main className="p-4 w-full">
-      <Navbar />
+      <Navbar 
+        button={
+          <Button asChild>
+            <Link href="/invoice/create">
+              <Plus />
+              <span className="max-sm:hidden">Create Invoice</span>
+            </Link>
+          </Button>
+        }
+      />
 
       <section className="p-4">
         <StatisticsPartners />
@@ -62,7 +72,7 @@ export default async function Home() {
           </section>
         </header>
         
-        <Tabs defaultValue="wherehouses" className="w-full">
+        <Tabs defaultValue="warehouses" className="w-full">
           <section className="overflow-x-auto scrollbar-none">
             <TabsList>
               {
@@ -89,7 +99,7 @@ export default async function Home() {
             </section>
 
             <aside className="min-w-[300px] p-4 border rounded-lg h-fit">
-              <PupolarWherehouse />
+              <Pupolarwarehouse />
 
               <section className="mt-4 flex items-center gap-2">
                 <CheckCircle2 className="text-main" />
