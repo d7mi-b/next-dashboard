@@ -27,12 +27,12 @@ export function Combobox({
     keyValue = "id",
 }: {
     items: any[],
-    value: string,
-    setValue: React.Dispatch<React.SetStateAction<string>>,
+    value: string | number | undefined,
+    setValue: React.Dispatch<React.SetStateAction<string | number | undefined>>,
     keyLabel?: string,
     keyValue?: string,
 }) {
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(false);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -41,15 +41,15 @@ export function Combobox({
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[200px] justify-between"
+                    className="w-full justify-between"
                 >
-                    {value
-                        ? items.find((item) => item[keyLabel] === value)?.[keyLabel]
+                    {value != undefined
+                        ? items.find((item) => String(item[keyValue]) === String(value))?.[keyLabel]
                         : "Select item..."}
                     <ChevronsUpDown className="opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent className="w-full p-0">
                 <Command>
                     <CommandInput placeholder="Search item..." className="h-9" />
                     <CommandList>
@@ -57,10 +57,15 @@ export function Combobox({
                         <CommandGroup>
                             {items.map((item) => (
                                 <CommandItem
-                                    key={item[keyValue]}
-                                    value={item[keyValue]}
+                                    key={String(item[keyValue])}
+                                    value={String(item[keyValue])}
                                     onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue)
+                                        if (String(value) === currentValue) {
+                                            setValue(undefined);
+                                        } else {
+                                            setValue(item[keyValue])
+                                        }
+
                                         setOpen(false)
                                     }}
                                 >
@@ -68,7 +73,7 @@ export function Combobox({
                                 <Check
                                     className={cn(
                                         "ml-auto",
-                                        value === item[keyLabel] ? "opacity-100" : "opacity-0"
+                                        String(value) === String(item[keyValue]) ? "opacity-100" : "opacity-0"
                                     )}
                                 />
                                 </CommandItem>

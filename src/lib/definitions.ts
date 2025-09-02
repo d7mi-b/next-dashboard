@@ -5,7 +5,7 @@ export const LoginFormSchema = z.object({
     password: z.string().min(1, { message: "Password is required." }),
 });
 
-export const AddWherehouseFormSchema = z.object({
+export const AddwarehouseFormSchema = z.object({
     name: z.string().min(1, { message: "Name field is required." }),
     address: z.string().min(1, { message: "Address field is required." }),
     isDefault: z.boolean().optional(),
@@ -36,3 +36,9 @@ export type AddPartnerActionState = {
         phone?: string[];
     };
 };
+
+export const CreateSaleOrderFormSchema = z.object({
+    customer: z.number({ message: "Customer field is required." }),
+    warehouse: z.number({ message: "Warehouse field is required." }),
+    date: z.coerce.date<Date>({ message: "Date field is required." }),
+});

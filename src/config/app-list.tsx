@@ -1,34 +1,34 @@
-import WherehousesTab from "@/components/ui/wherehouses-tab";
+import WarehousesTab from "@/components/ui/warehouses-tab";
 
 export const appList = [
     {
-        id: "wherehouses",
-        name: 'Wherehouses',
-        tab: <WherehousesTab />,
+        id: "warehouses",
+        name: 'warehouses',
+        tab: <WarehousesTab />,
         badge: 12
     },
     {
         id: "partners",
         name: 'Partners',
-        tab: <WherehousesTab />,
+        tab: <WarehousesTab />,
         badge: 0
     },
     {
         id: "fields-requests",
         name: 'Fields Requests',
-        tab: <WherehousesTab />,
+        tab: <WarehousesTab />,
         badge: 5
     },
     {
         id: "pick-lists",
         name: 'Pick Lists',
-        tab: <WherehousesTab />,
+        tab: <WarehousesTab />,
         badge: 0
     },
     {
         id: "activity",
         name: 'Activity',
-        tab: <WherehousesTab />,
+        tab: <WarehousesTab />,
         badge: 0
     }
 ];
