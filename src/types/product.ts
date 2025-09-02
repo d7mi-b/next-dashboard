@@ -2,6 +2,7 @@ import type { Tax } from "./tax";
 
 export type Product = {
     id: number;
+    product_variant_id: number[];
     name: string;
     list_price: number;
     taxes_id: ReadonlyArray<number>;

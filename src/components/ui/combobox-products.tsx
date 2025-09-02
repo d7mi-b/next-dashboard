@@ -41,7 +41,7 @@ export function ComboboxProducts({
             return;
         }
 
-        e.preventDefault();
+        // e.preventDefault();
 
         if (e.key === "Enter") {
             const name = (e.target as HTMLInputElement).value;
@@ -55,21 +55,21 @@ export function ComboboxProducts({
     };
 
     return (
-        <Popover open={open}>
-            <Command>
-                <PopoverTrigger asChild >
+        <Popover open={open} onOpenChange={setOpen}>
+            <Command className="w-[350px]">
+                <PopoverTrigger asChild>
                     <CommandInput
-                        ref={inputRef}
-                        placeholder="Search framework..."
-                        className="h-9"
+                        placeholder="Search product..."
+                        className="h-9 p-0"
                         onKeyDown={handleKeyDown}
                         onFocus={() => setOpen(true)}
+                        onBlur={() => setOpen(false)}
                     />
                 </PopoverTrigger>
-                <PopoverContent className="min-w-[200px]  p-0">
-                    <CommandList onBlur={() => setOpen(false)} onMouseEnter={() => setOpen(true)}>
+                <PopoverContent className="min-w-[200px] p-0">
+                    <CommandList className="w-full">
                         <CommandEmpty>No item found.</CommandEmpty>
-                        <CommandGroup>
+                        <CommandGroup className="w-full">
                             {items.map((item) => (
                                 <CommandItem
                                     key={item.id}

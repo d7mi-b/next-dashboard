@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
                 ? odooData.error
                 : odooData.error?.message ?? 'Failed to fetch data';
 
+                console.error('Odoo error response:', odooData.error);
+
             return NextResponse.json({ status: false, message }, { status: 500 });
         }
     } catch (error: any) {

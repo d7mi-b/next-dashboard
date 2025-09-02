@@ -11,6 +11,9 @@ export default function useCreateSalesOrder() {
     const items: Product[] = useCreateSalesStore((state: any) => state.items);
     const setItems = useCreateSalesStore((state: any) => state.setItems);
     const setTotal = useCreateSalesStore((state: any) => state.setTotal);
+    const customer: number | null = useCreateSalesStore((state: any) => state.customer ?? null);
+    const date: Date = useCreateSalesStore((state: any) => state.date ?? new Date());
+    const reset = useCreateSalesStore((state: any) => state.reset);
 
     const [customers, setCustomers] = useState<Partner[]>([]);
     const [warehouses, setwarehouses] = useState<any[]>([]);
@@ -77,7 +80,7 @@ export default function useCreateSalesOrder() {
                 [
                     ["sale_ok", "=", true]
                 ],
-                ["name", "list_price", "taxes_id", "default_code"]
+                ["name", "list_price", "taxes_id", "default_code", "product_variant_id"]
             ],
             "kwargs": {}
         });
@@ -173,6 +176,52 @@ export default function useCreateSalesOrder() {
         setTotal(items.reduce((acc, cur) => acc + (cur.price_total ?? 0), 0));
     }
 
+    async function create () {
+        if (!customer) {
+            toast.error("Select a customer before creating the order.");
+            return;
+        }
+
+        if (!items.length) {
+            toast.error("Add at least one item before creating the order.");
+            return;
+        }
+
+        const order_line = items.map((item) => ([
+            0,
+            0,
+            {
+                "name": item.name,
+                "product_id": item.product_variant_id?.[0] ?? item.id,
+                "product_uom_qty": Math.max(1, Number(item.quantity) ?? 1),
+                "price_unit": item.list_price,
+            }
+        ]));
+
+        try {
+            const result = await requestOdoo({
+                "model": "sale.order",
+                "method": "create",
+                "args": [
+                    {
+                        "order_line": order_line,
+                        "partner_id": customer,
+                    }
+                ],
+                "kwargs": {}
+            });
+
+            if (typeof result === "number") {
+                toast.success(`Order #${result} created successfully.`);
+                reset();
+            } else {
+                toast.error("Failed to create order.");
+            }
+        } catch (err: any) {
+            toast.error(err?.message ?? "Failed to create order.");
+        }
+    }
+
     return {
         customers,
         warehouses,
@@ -181,5 +230,6 @@ export default function useCreateSalesOrder() {
         addItem,
         handleQuantityChange,
         removeItem,
+        create
     }
 }

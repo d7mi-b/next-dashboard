@@ -29,6 +29,7 @@ export default function Page() {
         addItem,
         handleQuantityChange,
         removeItem,
+        create
     } = useCreateSalesOrder();
     const total: number = useCreateSalesStore((state: any) => state.total);
     const columns = useCreateSalesStore((state: any) => state.columns);
@@ -118,6 +119,8 @@ export default function Page() {
             return;
         }
         console.log("submit", values);
+
+        create();
     }
 
     return (
@@ -174,7 +177,7 @@ export default function Page() {
                             <TableRow>
                                 {
                                     columns.filter((c: any) => c.visibility).map((column: any) => (
-                                        <TableHead className="min-w-[150px]" key={column.name}>{column.name}</TableHead>
+                                        <TableHead key={column.name}>{column.name}</TableHead>
                                     ))
                                 }
                                 <TableHead></TableHead>
@@ -226,7 +229,9 @@ export default function Page() {
                                 ))
                             }
                             <TableRow>
-                                <TableCell><ComboboxProducts items={products} addItem={addItem} /></TableCell>
+                                <TableCell colSpan={columns.filter((c: any) => c.visibility).length + 1}>
+                                    <ComboboxProducts items={products} addItem={addItem} />
+                                </TableCell>
                             </TableRow>
                         </TableBody>
                         <TableFooter>
