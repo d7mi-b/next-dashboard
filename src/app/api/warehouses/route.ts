@@ -1,7 +1,7 @@
-import { warehouse } from '@/types/warehouse';
+import { Warehouse } from '@/types/warehouse';
 
 export async function GET() {
-  const warehouses: warehouse[] = [
+  const warehouses: Warehouse[] = [
     {
       id: 1,
       name: 'Main Warehouse',

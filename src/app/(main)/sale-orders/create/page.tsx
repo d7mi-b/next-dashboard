@@ -113,12 +113,20 @@ export default function Page() {
         }
     }
 
-    const onSubmit = (values: z.infer<typeof CreateSaleOrderFormSchema>) => {
+    const onSubmitDraftOrder = (values: z.infer<typeof CreateSaleOrderFormSchema>) => {
         if (items.length === 0) {
             toast.warning("Please add at least one product.");
             return;
         }
-        console.log("submit", values);
+
+        create(true);
+    }
+
+    const onSubmitConfirmOrder = (values: z.infer<typeof CreateSaleOrderFormSchema>) => {
+        if (items.length === 0) {
+            toast.warning("Please add at least one product.");
+            return;
+        }
 
         create();
     }
@@ -245,8 +253,8 @@ export default function Page() {
             </section>
 
             <section className="flex items-center justify-end gap-4 my-4">
-                <Button variant="outline">Save as Draft</Button>
-                <Button onClick={form.handleSubmit(onSubmit)}>Save & Send</Button>
+                <Button onClick={form.handleSubmit(onSubmitDraftOrder)} variant="outline">Save as Draft</Button>
+                <Button onClick={form.handleSubmit(onSubmitConfirmOrder)}>Save & Send</Button>
             </section>
         </main>
     );

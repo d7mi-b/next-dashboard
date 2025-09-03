@@ -31,18 +31,18 @@ export async function POST(req: NextRequest) {
         } else {
             const message = typeof odooData.error === 'string'
                 ? odooData.error
-                : odooData.error?.message ?? 'Failed to fetch data';
+                : odooData.error?.data?.message ?? 'Failed to fetch data';
 
                 console.error('Odoo error response:', odooData.error);
+                console.error("Message: ", message);
 
-            return NextResponse.json({ status: false, message }, { status: 500 });
+            return NextResponse.json({ status: false, message }, { status: 400 });
         }
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
             return NextResponse.json({ status: false, message: error.response?.data }, { status: 500 });
         }
 
-        console.error('Odoo data fetch error:', error);
         return NextResponse.json({ status: false, message: 'Internal server error' }, { status: 500 });
     }
 }

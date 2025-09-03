@@ -1,52 +1,49 @@
-import { Partner } from "@/types/partner";
+import { SaleOrder } from "@/types/sale-order";
 import { Dispatch, SetStateAction } from "react";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "./table";
-import PartnerAvatar from "./partner-avatar";
 import { Button } from "./button";
 import Link from "next/link";
-import { Edit, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import { Badge } from "./badge";
 
 const columns = [
     {
         id: 1,
         name: "Name",
         accessor: "name",
-        Cell: (partner: Partner) => <section className="flex items-center gap-2">
-            <PartnerAvatar image={partner.image_1920} name={partner.name} />
-            <span>{partner.name}</span>
-        </section>,
+        Cell: (saleOrder: SaleOrder) => <span>{saleOrder.name}</span>
     },
     {
         id: 2,
-        name: "Email",
-        accessor: "email",
-        Cell: (partner: Partner) => <span>{partner.email}</span>,
+        name: "Partner",
+        accessor: "partner_id",
+        Cell: (saleOrder: SaleOrder) => <span>{saleOrder.partner_id[1]}</span>
     },
     {
         id: 3,
-        name: "Phone",
-        accessor: "phone",
-        Cell: (partner: Partner) => <span>{partner.phone}</span>,
+        name: "state",
+        accessor: "state",
+        Cell: (saleOrder: SaleOrder) => <Badge variant={saleOrder.state === "draft" ? "outline" : "default"}>{saleOrder.state}</Badge>
     },
     {
         id: 4,
-        name: "Mobile",
-        accessor: "mobile",
-        Cell: (partner: Partner) => <span>{partner.mobile}</span>,
+        name: "Amount Total",
+        accessor: "amount_total",
+        Cell: (saleOrder: SaleOrder) => <span>{saleOrder.amount_total}</span>
     },
     {
         id: 5,
-        name: "Create Date",
-        accessor: "create_date",
-        Cell: (partner: Partner) => <span>{new Date(partner.create_date).toLocaleDateString()}</span>,
+        name: "Date Order",
+        accessor: "date_order",
+        Cell: (saleOrder: SaleOrder) => <span>{new Date(saleOrder.date_order).toLocaleDateString()}</span>
     },
 ]
 
-export default function PartnersTableView({ partners, setPartner }: { partners: Partner[], setPartner: Dispatch<SetStateAction<Partner | undefined>> }) {
+export default function SaleOrdersTableView({ saleOrders }: { saleOrders: SaleOrder[] }) {
     return (
         <section>
             <Table>
-                <TableCaption>Partners</TableCaption>
+                <TableCaption>Sale Orders</TableCaption>
                 <TableHeader>
                     <TableRow>
                         {
@@ -58,22 +55,21 @@ export default function PartnersTableView({ partners, setPartner }: { partners: 
                 </TableHeader>
                 <TableBody>
                     {
-                        partners.map((partner) => (
-                            <TableRow key={partner.id}>
+                        saleOrders.map((saleOrder) => (
+                            <TableRow key={saleOrder.id}>
                                 {
                                     columns.map((column) => (
                                         <TableCell key={column.id}>
-                                            {partner[column.accessor] !== "false" ? column.Cell(partner) : <span></span>}
+                                            {saleOrder[column.accessor] !== "false" ? column.Cell(saleOrder) : <span></span>}
                                         </TableCell>
                                     ))
                                 }
                                 <TableCell>
                                     <Button variant="outline">
-                                        <Link href={`/partners/${partner.id}`}>
+                                        <Link href={`/sale-orders`}>
                                             <ExternalLink />
                                         </Link>
                                     </Button>
-                                    <Button variant="outline" onClick={() => setPartner(partner)}><Edit /></Button>
                                 </TableCell>
                             </TableRow>
                         ))

@@ -28,7 +28,7 @@ export default function ProductTableColumnSetting() {
                     </div>
                     <div className="grid gap-2">
                         {
-                            columns.map((column: any) => (
+                            columns.filter((c: any) => c.changable).map((column: any) => (
                                 <div key={column.name} className="grid grid-cols-2 items-center gap-4">
                                     <Label htmlFor="width">{column.name}</Label>
                                     <Switch

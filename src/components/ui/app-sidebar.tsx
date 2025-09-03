@@ -41,7 +41,7 @@ export function AppSidebar() {
             items: [
                 {
                     title: t("Orders"),
-                    url: "/",
+                    url: "/sale-orders",
                     icon: ShoppingBasket,
                 },
                 {

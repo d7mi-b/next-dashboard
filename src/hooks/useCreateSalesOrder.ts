@@ -2,7 +2,7 @@ import { requestOdoo } from "@/actions/request-odoo";
 import { Partner } from "@/types/partner";
 import { Product } from "@/types/product";
 import { Tax } from "@/types/tax";
-import { warehouse } from "@/types/warehouse";
+import { Warehouse } from "@/types/warehouse";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import useCreateSalesStore from "./useCreateSalesStore";
@@ -48,7 +48,7 @@ export default function useCreateSalesOrder() {
     }
 
     async function getwarehouses() {
-        const result: warehouse[] = [
+        const result: Warehouse[] = [
             {
                 id: 1,
                 name: "warehouse 1",
@@ -176,7 +176,7 @@ export default function useCreateSalesOrder() {
         setTotal(items.reduce((acc, cur) => acc + (cur.price_total ?? 0), 0));
     }
 
-    async function create () {
+    async function create (draft: boolean = false) {
         if (!customer) {
             toast.error("Select a customer before creating the order.");
             return;
@@ -208,7 +208,7 @@ export default function useCreateSalesOrder() {
                         "partner_id": customer,
                     }
                 ],
-                "kwargs": {}
+                "kwargs": {},
             });
 
             if (typeof result === "number") {
@@ -216,6 +216,25 @@ export default function useCreateSalesOrder() {
                 reset();
             } else {
                 toast.error("Failed to create order.");
+                return;
+            }
+
+            if (!draft) {
+                const confirmOrderResult = await requestOdoo({
+                    "model": "sale.order",
+                    "method": "action_confirm",
+                    "args": [
+                        [result],
+                    ],
+                    "kwargs": {}
+                });
+
+                if (confirmOrderResult) {
+                    toast.success(`Order #${result} confirmed successfully.`);
+                    reset();
+                } else {
+                    toast.error(confirmOrderResult ?? "Failed to confirm order.");
+                }
             }
         } catch (err: any) {
             toast.error(err?.message ?? "Failed to create order.");
