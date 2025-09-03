@@ -13,12 +13,14 @@ import { Dispatch, KeyboardEventHandler, SetStateAction, useEffect, useState } f
 
 export default function Navbar({
     button,
+    search,
     setSearch,
 }: {
     button?: React.ReactNode;
+    search?: string;
     setSearch?: Dispatch<SetStateAction<string>>;
 }) {
-    const [currentSearch, setCurrentSearch] = useState<string>("");
+    const [currentSearch, setCurrentSearch] = useState<string>(search ?? "");
 
     const handleSearch = (e: any) => {
         if (e.key === "Enter") {

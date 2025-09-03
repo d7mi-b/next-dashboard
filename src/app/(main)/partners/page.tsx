@@ -11,6 +11,7 @@ import { useState } from "react";
 import PartnersTableView from "@/components/ui/partners-table-view";
 import { Switch } from "@/components/ui/switch";
 import PartnersFilters from "@/components/ui/partners-filters";
+import Loading from "../loading";
 
 export default function Partners() {
     const { 
@@ -32,16 +33,23 @@ export default function Partners() {
         country,
         setCountry,
         city,
-        setCity
+        setCity,
+        isLoading,
+        search
     } = usePartners();
     const [cardsView, setCardsView] = useState<boolean>(false);
+
+    if (isLoading) {
+        return <Loading />
+    }
 
     return (
         <main className="p-4 w-full">
             <Navbar 
                 button={
                     <AddPartnerDialog />
-                } 
+                }
+                search={search}
                 setSearch={setSearch}
             />
 

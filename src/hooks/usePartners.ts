@@ -17,6 +17,7 @@ export default function usePartners() {
     const [isSupplier, setIsSupplier] = useState<boolean>(false);
     const [country, setCountry] = useState("");
     const [city, setCity] = useState("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         fetchPartners();
@@ -24,6 +25,8 @@ export default function usePartners() {
     }, [page, search, order, city, country, isCustomer, isSupplier]);
 
     async function fetchPartners() {
+        setIsLoading(true);
+
         let domain = [];
     
         if (search) {
@@ -62,7 +65,10 @@ export default function usePartners() {
             }
         });
 
-        setPartners(result);
+        if (result) {
+            setPartners(result);
+            setIsLoading(false);
+        }
     }
 
     async function create(values: z.infer<typeof AddPartnerFormSchema>) {
@@ -205,6 +211,8 @@ export default function usePartners() {
         country,
         setCountry,
         city,
-        setCity
+        setCity,
+        isLoading,
+        search
     }
 }
