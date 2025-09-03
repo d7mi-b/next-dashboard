@@ -5,6 +5,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import {NextIntlClientProvider} from 'next-intl';
 import { Toaster } from "@/components/ui/sonner";
+import BreadcrumbApp from "@/components/ui/breadcrumb-app";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +45,11 @@ export default async function RootLayout({
           <SidebarProvider>
             <AppSidebar />
 
-            {children}
+            <section className="w-full flex flex-col min-h-screen gap-2">
+              <BreadcrumbApp />
+
+              {children}
+            </section>
 
             <Toaster />
           </SidebarProvider>
