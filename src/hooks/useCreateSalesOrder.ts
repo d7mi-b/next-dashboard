@@ -232,9 +232,12 @@ export default function useCreateSalesOrder() {
                 if (confirmOrderResult) {
                     toast.success(`Order #${result} confirmed successfully.`);
                     reset();
+                    return true;
                 } else {
                     toast.error(confirmOrderResult ?? "Failed to confirm order.");
                 }
+            } else {
+                return true;
             }
         } catch (err: any) {
             toast.error(err?.message ?? "Failed to create order.");

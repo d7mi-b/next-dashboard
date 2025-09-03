@@ -15,6 +15,7 @@ import useCreateSalesStore from "@/hooks/useCreateSalesStore";
 import { CreateSaleOrderFormSchema } from "@/lib/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -113,22 +114,30 @@ export default function Page() {
         }
     }
 
-    const onSubmitDraftOrder = (values: z.infer<typeof CreateSaleOrderFormSchema>) => {
+    const onSubmitDraftOrder = async (values: z.infer<typeof CreateSaleOrderFormSchema>) => {
         if (items.length === 0) {
             toast.warning("Please add at least one product.");
             return;
         }
 
-        create(true);
+        const result = await create(true);
+
+        if (result) {
+            redirect('/sale-orders');
+        }
     }
 
-    const onSubmitConfirmOrder = (values: z.infer<typeof CreateSaleOrderFormSchema>) => {
+    const onSubmitConfirmOrder = async (values: z.infer<typeof CreateSaleOrderFormSchema>) => {
         if (items.length === 0) {
             toast.warning("Please add at least one product.");
             return;
         }
 
-        create();
+        const result = await create();
+
+        if (result) {
+            redirect('/sale-orders');
+        }
     }
 
     return (
