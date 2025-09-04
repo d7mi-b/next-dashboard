@@ -1,7 +1,7 @@
 import { requestOdoo } from "@/actions/request-odoo";
 import { AddPartnerFormSchema, EditPartnerFormSchema } from "@/lib/definitions";
 import { SaleOrder } from "@/types/sale-order";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -12,17 +12,19 @@ export default function useSaleOrders() {
     const [search, setSearch] = useState<string>("");
     const [order, setOrder] = useState<string>("desc");
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         fetchSaleOrders();
         getTotalPages();
     }, [page, search, order]);
 
-    async function fetchSaleOrders() {
-        console.log("fetchSaleOrders", isLoading);
+    const fetchSaleOrders = useCallback(async () => {
         setIsLoading(true);
+        setSaleOrders(undefined);
+        setError(null);
 
-        const result = await requestOdoo({
+        const { result } = await requestOdoo({
             "model": "sale.order",
             "method": "search_read",
             "args": [
@@ -39,23 +41,14 @@ export default function useSaleOrders() {
         if (result) {
             setSaleOrders(result);
             setIsLoading(false);
+        } else {
+            setError(error ?? "Failed to fetch sale orders.");
+            setIsLoading(false);
         }
-    }
+    }, [page, search, order]); // Dependencies for fetchSaleOrders
 
-    function nextPage() {
-        if (page < totalPages) {
-            setPage(page + 1);
-        }
-    }
-
-    function prevPage() {
-        if (page > 1) {
-            setPage(page - 1);
-        }
-    }
-
-    async function getTotalPages() {
-        const result = await requestOdoo({
+    const getTotalPages = useCallback(async () => {
+        const { result } = await requestOdoo({
             "model": "sale.order",
             "method": "search_count",
             "args": [
@@ -66,6 +59,23 @@ export default function useSaleOrders() {
 
         if (result !== undefined && result !== null) {
             setTotalPages(Math.max(1, Math.ceil(result / 10)));
+        }
+    }, [search, order]); // Dependencies for getTotalPages
+
+    useEffect(() => {
+        fetchSaleOrders();
+        getTotalPages();
+    }, [fetchSaleOrders]); // The dependencies are now the memoized functions
+
+    function nextPage() {
+        if (page < totalPages) {
+            setPage(page + 1);
+        }
+    }
+
+    function prevPage() {
+        if (page > 1) {
+            setPage(page - 1);
         }
     }
 
@@ -80,6 +90,7 @@ export default function useSaleOrders() {
         order,
         setOrder,
         isLoading,
-        search
+        search,
+        error
     }
 }

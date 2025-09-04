@@ -4,7 +4,7 @@ import { Filter } from "lucide-react";
 import { Label } from "./label";
 import { Input } from "./input";
 import { requestOdoo } from "@/actions/request-odoo";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Combobox } from "./combobox";
 import { Switch } from "./switch";
 
@@ -40,7 +40,7 @@ export default function PartnersFilters({
     const [cities, setCities] = useState<any[]>([]);
 
     async function fetchCountries() {
-        const result = await requestOdoo({
+        const { result } = await requestOdoo({
             "model": "res.country",
             "method": "search_read",
             "args": [
@@ -58,7 +58,7 @@ export default function PartnersFilters({
     }
 
     async function fetchCities() {
-        const result: { id: number, city: string }[] = await requestOdoo({
+        const { result } = await requestOdoo({
             "model": "res.partner",
             "method": "search_read",
             "args": [
@@ -69,7 +69,7 @@ export default function PartnersFilters({
         });
 
         if (result) {
-            const cities = [...new Set(result.filter(c => c.city).map(p => ({ id: p.city, name: p.city })))]
+            const cities = [...new Set(result.filter((c: { city: string }) => c.city).map((p: { city: string }) => ({ id: p.city, name: p.city })))]
             setCities([...cities]);
         }
     }
@@ -95,11 +95,11 @@ export default function PartnersFilters({
                 <div className="grid gap-2">
                     <div className="grid grid-cols-3 items-center gap-4">
                         <Label htmlFor="width">Country</Label>
-                        <Combobox items={countries} value={country} setValue={setCountry} />
+                        <Combobox items={countries} value={country} setValue={setCountry as Dispatch<SetStateAction<string | number | undefined>>} />
                     </div>
                     <div className="grid grid-cols-3 items-center gap-4">
                         <Label htmlFor="width">City</Label>
-                        <Combobox items={cities} value={city} setValue={setCity} />
+                        <Combobox items={cities} value={city} setValue={setCity as Dispatch<SetStateAction<string | number | undefined>>} />
                     </div>
                     <div className="grid grid-cols-3 items-center gap-4">
                         <Label htmlFor="height">Is Customer</Label>
@@ -117,7 +117,7 @@ export default function PartnersFilters({
                     </div>
                     <div className="grid grid-cols-3 items-center gap-4">
                         <Label htmlFor="height">Order By Created Date</Label>
-                        <Combobox items={orderOptions} value={order} setValue={setOrder} keyLabel="label" keyValue="value" />
+                        <Combobox items={orderOptions} value={order} setValue={setOrder as Dispatch<SetStateAction<string | number | undefined>>} keyLabel="label" keyValue="value" />
                     </div>
                 </div>
                 </div>

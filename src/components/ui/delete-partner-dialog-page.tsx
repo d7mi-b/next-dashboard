@@ -31,7 +31,7 @@ export default function DeletePartnerDialogPage({
     }
 
     const handleDelete = async () => {
-        const result = await requestOdoo({
+        const { result } = await requestOdoo({
             "model": "res.partner",
             "method": "unlink",
             "args": [

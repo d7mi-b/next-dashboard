@@ -12,6 +12,7 @@ import PartnersTableView from "@/components/ui/partners-table-view";
 import { Switch } from "@/components/ui/switch";
 import PartnersFilters from "@/components/ui/partners-filters";
 import Loading from "../loading";
+import Error from "@/components/ui/error";
 
 export default function Partners() {
     const { 
@@ -35,7 +36,8 @@ export default function Partners() {
         city,
         setCity,
         isLoading,
-        search
+        search,
+        error
     } = usePartners();
     const [cardsView, setCardsView] = useState<boolean>(false);
 
@@ -85,7 +87,7 @@ export default function Partners() {
                 </header>
 
                 {
-                    partners.length > 0 &&
+                    partners && partners.length > 0 &&
                     <section>
                         {
                             !cardsView && <PartnersCardView partners={partners} setPartner={setPartner} />
@@ -106,7 +108,11 @@ export default function Partners() {
                 }
 
                 {
-                    partners.length === 0 && <EmptyResult />
+                    partners && partners.length === 0 && <EmptyResult />
+                }
+
+                {
+                    error && <Error error={error} />
                 }
             </section>
         </main>

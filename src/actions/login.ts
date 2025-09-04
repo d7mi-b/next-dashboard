@@ -11,7 +11,7 @@ export async function login(values: z.infer<typeof LoginFormSchema>) {
         .catch((err) => console.log("Error", err));
 
     if (result.status) {
-        const [userGroupIds] = await requestOdoo({
+        const { result: userGroupIds} = await requestOdoo({
             "model": "res.users",
             "method": "read",
             "args": [
@@ -21,7 +21,7 @@ export async function login(values: z.infer<typeof LoginFormSchema>) {
             "kwargs": {}
         });
 
-        const permission = userGroupIds.groups_id;
+        const permission = userGroupIds[0].groups_id;
 
         redirect('/');
     } else {

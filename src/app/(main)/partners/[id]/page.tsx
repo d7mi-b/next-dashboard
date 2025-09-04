@@ -17,7 +17,7 @@ export default async function Partner({
 }) {
     const { id } = await params;
 
-    const [partner]: [PartnerType] = await requestOdoo({
+    const { result: [partner] } = await requestOdoo({
         "model": "res.partner",
         "method": "read",
         "args": [
@@ -27,7 +27,7 @@ export default async function Partner({
         "kwargs": {}
     });
 
-    const childsPartner: ChildPartnerType[] = await requestOdoo({
+    const { result: childsPartner } = await requestOdoo({
         "model": "res.partner",
         "method": "read",
         "args": [
@@ -119,7 +119,7 @@ export default async function Partner({
                     childsPartner.length > 0 &&
                     <section className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
                     {
-                        childsPartner.map((child) => (
+                        childsPartner.map((child: ChildPartnerType) => (
                             <ChildPartner key={child.id} child={child} />
                         ))
                     }

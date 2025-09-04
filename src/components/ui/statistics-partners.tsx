@@ -5,51 +5,7 @@ import { useEffect, useState } from "react";
 import { PieChart, Pie, ResponsiveContainer, Cell, Legend, Tooltip, LineChart, CartesianGrid, XAxis, YAxis, Line } from "recharts";
 import renderActiveShape from "./render-active-shape";
 import chartColors from "@/config/chart-colors";
-
-const data = [
-  {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: 'Page B',
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: 'Page C',
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: 'Page D',
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: 'Page E',
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: 'Page F',
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: 'Page G',
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
+import { SaleOrder } from "@/types/sale-order";
 
 export default function StatisticsPartners() {
     const [totalPartners, setTotalPartners] = useState<{name: string, value: number}[]>([]);
@@ -61,7 +17,7 @@ export default function StatisticsPartners() {
     }, []);
 
     async function getTotalPartners() {
-        const customersCount = await requestOdoo({
+        const { result: customersCount } = await requestOdoo({
             "model": "res.partner",
             "method": "search_count",
             "args": [
@@ -72,7 +28,7 @@ export default function StatisticsPartners() {
             "kwargs": {}
         });
 
-        const suppliersCount = await requestOdoo({
+        const { result: suppliersCount } = await requestOdoo({
             "model": "res.partner",
             "method": "search_count",
             "args": [
@@ -83,7 +39,7 @@ export default function StatisticsPartners() {
             "kwargs": {}
         });
 
-        const partnersCount = await requestOdoo({
+        const { result: partnersCount } = await requestOdoo({
             "model": "res.partner",
             "method": "search_count",
             "args": [
@@ -102,7 +58,7 @@ export default function StatisticsPartners() {
     }
 
     async function getSaleOrdersAmount() {
-        const saleOrders = await requestOdoo({
+        const { result: saleOrders } = await requestOdoo({
             "model": "sale.order",
             "method": "search_read",
             "args": [
@@ -119,7 +75,7 @@ export default function StatisticsPartners() {
         });
 
         const salesByDate = new Map();
-        saleOrders.forEach(d => {
+        saleOrders.forEach((d: SaleOrder) => {
             const dateKey = new Date(d.date_order).toLocaleDateString();
             const amount = d.amount_total;
             const state = d.state === 'sale' ? 'confirmed' : 'draft';
@@ -137,7 +93,7 @@ export default function StatisticsPartners() {
 
         // Convert map to a sorted array for Recharts
         const aggregatedData = Array.from(salesByDate.values())
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         console.log(aggregatedData);
 

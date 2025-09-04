@@ -30,7 +30,7 @@ export default function useCreateSalesOrder() {
     }, [items]);
 
     async function getCustomers() {
-        const result = await requestOdoo({
+        const { result } = await requestOdoo({
             "model": "res.partner",
             "method": "search_read",
             "args": [
@@ -73,7 +73,7 @@ export default function useCreateSalesOrder() {
     }
 
     async function getProducts() {
-        const result = await requestOdoo({
+        const { result } = await requestOdoo({
             "model": "product.template",
             "method": "search_read",
             "args": [
@@ -134,7 +134,7 @@ export default function useCreateSalesOrder() {
             return [];
         }
 
-        const result: Tax[] = await requestOdoo({
+        const { result, error } = await requestOdoo({
             "model": "account.tax",
             "method": "read",
             "args": [
@@ -147,6 +147,7 @@ export default function useCreateSalesOrder() {
         if (result) {
             return result;
         } else {
+            toast.error(error ?? "Failed to get taxes.");
             return [];
         }
     }
@@ -199,7 +200,7 @@ export default function useCreateSalesOrder() {
         ]));
 
         try {
-            const result = await requestOdoo({
+            const { result, error } = await requestOdoo({
                 "model": "sale.order",
                 "method": "create",
                 "args": [
@@ -215,12 +216,12 @@ export default function useCreateSalesOrder() {
                 toast.success(`Order #${result} created successfully.`);
                 reset();
             } else {
-                toast.error("Failed to create order.");
+                toast.error(error ?? "Failed to create order.");
                 return;
             }
 
             if (!draft) {
-                const confirmOrderResult = await requestOdoo({
+                const { result: confirmOrderResult, error: confirmOrderError } = await requestOdoo({
                     "model": "sale.order",
                     "method": "action_confirm",
                     "args": [
@@ -234,7 +235,7 @@ export default function useCreateSalesOrder() {
                     reset();
                     return true;
                 } else {
-                    toast.error(confirmOrderResult ?? "Failed to confirm order.");
+                    toast.error(confirmOrderError ?? "Failed to confirm order.");
                 }
             } else {
                 return true;

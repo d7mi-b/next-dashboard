@@ -11,6 +11,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import Loading from "../loading";
+import Error from "@/components/ui/error";
 
 export default function SaleOrders() {
     const { 
@@ -21,10 +22,9 @@ export default function SaleOrders() {
         prevPage, 
         setPage,
         setSearch,
-        order,
-        setOrder,
         isLoading,
-        search
+        search,
+        error
     } = useSaleOrders();
     const [cardsView, setCardsView] = useState<boolean>(false);
 
@@ -91,6 +91,10 @@ export default function SaleOrders() {
 
                 {
                     saleOrders && saleOrders.length === 0 && <EmptyResult />
+                }
+
+                { 
+                    error && <Error error={error} />
                 }
             </section>
         </main>

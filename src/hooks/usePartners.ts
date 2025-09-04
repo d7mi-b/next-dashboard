@@ -1,14 +1,14 @@
 import { requestOdoo } from "@/actions/request-odoo";
 import { AddPartnerFormSchema, EditPartnerFormSchema } from "@/lib/definitions";
 import { Partner } from "@/types/partner";
-import { KeyboardEventHandler, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 
 export default function usePartners() {
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
-    const [partners, setPartners] = useState<Partner[]>([]);
+    const [partners, setPartners] = useState<Partner[]>();
     const [partner, setPartner] = useState<Partner>();
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [search, setSearch] = useState<string>("");
@@ -18,14 +18,13 @@ export default function usePartners() {
     const [country, setCountry] = useState("");
     const [city, setCity] = useState("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchPartners();
-        getTotalPages();
-    }, [page, search, order, city, country, isCustomer, isSupplier]);
-
-    async function fetchPartners() {
+    // Memoize the functions so they are not recreated on every render.
+    const fetchPartners = useCallback(async () => {
         setIsLoading(true);
+        setPartners(undefined);
+        setError(null);
 
         let domain = [];
     
@@ -51,7 +50,9 @@ export default function usePartners() {
             domain.push(['supplier_rank', '>', 0]);
         }
 
-        const result = await requestOdoo({
+        console.log("fetch partners");
+
+        const { result, error } = await requestOdoo({
             "model": "res.partner",
             "method": "search_read",
             "args": [
@@ -68,13 +69,61 @@ export default function usePartners() {
         if (result) {
             setPartners(result);
             setIsLoading(false);
+        } else {
+            setError(error ?? "Failed to fetch partners.");
+            setIsLoading(false);
         }
-    }
+    }, [page, search, order, city, country, isCustomer, isSupplier]); // Dependencies for fetchPartners
+
+    const getTotalPages = useCallback(async () => {
+        let domain = [];
+    
+        if (search) {
+            domain.push('|', '|', ['name', 'ilike', search], ['email', 'ilike', search], ['phone', 'ilike', search]);
+        }
+
+        if (city) {
+            domain.push(['city', 'ilike', city]);
+        }
+        
+        if (country) {
+            domain.push(['country_id', 'ilike', country]);
+        }
+        
+        // Correct logic for customer and supplier rank filters.
+        // Use an OR condition if both are checked to find partners that are either one.
+        if (isCustomer && isSupplier) {
+            domain.push('|', ['customer_rank', '>', 0], ['supplier_rank', '>', 0]);
+        } else if (isCustomer) {
+            domain.push(['customer_rank', '>', 0]);
+        } else if (isSupplier) {
+            domain.push(['supplier_rank', '>', 0]);
+        }
+
+        const { result } = await requestOdoo({
+            "model": "res.partner",
+            "method": "search_count",
+            "args": [
+                domain
+            ],
+            "kwargs": {}
+        });
+
+        if (result !== undefined && result !== null) {
+            setTotalPages(Math.max(1, Math.ceil(result / 10)));
+        }
+    }, [search, order, city, country, isCustomer, isSupplier]); // Dependencies for getTotalPages
+
+    useEffect(() => {
+        console.log('Effect is running...');
+        fetchPartners();
+        getTotalPages();
+    }, [fetchPartners]); // The dependencies are now the memoized functions
 
     async function create(values: z.infer<typeof AddPartnerFormSchema>) {
         setIsSaving(true);
 
-        const result = await requestOdoo({
+        const { result, error } = await requestOdoo({
             "model": "res.partner",
             "method": "create",
             "args": [
@@ -93,11 +142,14 @@ export default function usePartners() {
 
             if (result) {
                 await fetchPartners();
-
                 toast.success("Partner created successfully.");
             }
 
             return result;
+        } else {
+            setIsSaving(false);
+            toast.error(error ?? "Failed to create partner.");
+            return null;
         }
     }
 
@@ -114,7 +166,7 @@ export default function usePartners() {
             data.image_1920 = values.image_1920;
         }
 
-        const result = await requestOdoo({
+        const { result, error } = await requestOdoo({
             "model": "res.partner",
             "method": "write",
             "args": [
@@ -133,6 +185,10 @@ export default function usePartners() {
                 toast.success("Partner has been updated successfully.");
                 setPartner(undefined);
             }
+        } else {
+            setIsSaving(false);
+            toast.error(error ?? "Failed to update partner.");
+            return null;
         }
 
         return result;
@@ -147,45 +203,6 @@ export default function usePartners() {
     function prevPage() {
         if (page > 1) {
             setPage(page - 1);
-        }
-    }
-
-    async function getTotalPages() {
-        let domain = [];
-    
-        if (search) {
-            domain.push('|', '|', ['name', 'ilike', search], ['email', 'ilike', search], ['phone', 'ilike', search]);
-        }
-
-        if (city) {
-            domain.push(['city', 'ilike', city]);
-        }
-        
-        if (country) {
-            domain.push(['country_id', 'ilike', country]);
-        }
-        
-        // Correct logic for customer and supplier rank filters.
-        // Use an OR condition if both are checked to find partners that are either one.
-        if (isCustomer && isSupplier) {
-            domain.push('|', ['customer_rank', '>', 0], ['supplier_rank', '>', 0]);
-        } else if (isCustomer) {
-            domain.push(['customer_rank', '>', 0]);
-        } else if (isSupplier) {
-            domain.push(['supplier_rank', '>', 0]);
-        }
-
-        const result = await requestOdoo({
-            "model": "res.partner",
-            "method": "search_count",
-            "args": [
-                domain
-            ],
-            "kwargs": {}
-        });
-
-        if (result !== undefined && result !== null) {
-            setTotalPages(Math.max(1, Math.ceil(result / 10)));
         }
     }
 
@@ -213,6 +230,7 @@ export default function usePartners() {
         city,
         setCity,
         isLoading,
-        search
+        search,
+        error
     }
 }
