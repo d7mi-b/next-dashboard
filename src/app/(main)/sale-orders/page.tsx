@@ -4,7 +4,7 @@ import AppPagination from "@/components/ui/app-pagination";
 import { Button } from "@/components/ui/button";
 import EmptyResult from "@/components/ui/empty-result";
 import Navbar from "@/components/ui/navbar";
-import SaleOrdersTableView from "@/components/ui/sale-orders-table-view";
+import SaleOrdersTableView from "@/components/sale-orders/sale-orders-table-view";
 import { Switch } from "@/components/ui/switch";
 import useSaleOrders from "@/hooks/useSaleOrders";
 import { Plus } from "lucide-react";

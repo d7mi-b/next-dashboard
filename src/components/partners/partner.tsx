@@ -1,9 +1,9 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Partner as PartnerType } from "@/types/partner";
 import PartnerAvatar from "./partner-avatar";
 import Link from "next/link";
-import { Badge } from "./badge";
-import { Button } from "./button";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import { Edit, ExternalLink } from "lucide-react";
 
 export default function Partner({ partner, onClick }: { partner: PartnerType; onClick?: () => void }) {

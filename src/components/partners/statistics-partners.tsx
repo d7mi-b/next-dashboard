@@ -3,7 +3,7 @@
 import { requestOdoo } from "@/actions/request-odoo";
 import { useEffect, useState } from "react";
 import { PieChart, Pie, ResponsiveContainer, Cell, Legend, Tooltip, LineChart, CartesianGrid, XAxis, YAxis, Line } from "recharts";
-import renderActiveShape from "./render-active-shape";
+import renderActiveShape from "../ui/render-active-shape";
 import chartColors from "@/config/chart-colors";
 import { SaleOrder } from "@/types/sale-order";
 

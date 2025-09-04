@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { CalendarSync, CheckCircle2, FolderSync, Plus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge";
-import WarehousesTab from "@/components/ui/warehouses-tab";
+import WarehousesTab from "@/components/warehouses/warehouses-tab";
 import Pupolarwarehouse from "@/components/ui/pupolar-warehouse";
 import Navbar from "@/components/ui/navbar";
-import StatisticsPartners from "@/components/ui/statistics-partners";
+import StatisticsPartners from "@/components/partners/statistics-partners";
 import Link from "next/link";
 
 export default async function Home() {
@@ -48,7 +48,7 @@ export default async function Home() {
       <Navbar 
         button={
           <Button asChild>
-            <Link href="/invoice/create">
+            <Link href="/sale-orders/create">
               <Plus />
               <span className="max-sm:hidden">Create Invoice</span>
             </Link>

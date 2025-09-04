@@ -1,8 +1,8 @@
 import { Partner } from "@/types/partner";
 import { Dispatch, SetStateAction } from "react";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "./table";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import PartnerAvatar from "./partner-avatar";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 import Link from "next/link";
 import { Edit, ExternalLink } from "lucide-react";
 

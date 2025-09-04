@@ -1,4 +1,4 @@
-import WarehousesTab from "@/components/ui/warehouses-tab";
+import WarehousesTab from "@/components/warehouses/warehouses-tab";
 
 export const appList = [
     {

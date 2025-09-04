@@ -1,14 +1,14 @@
 import { Home } from "lucide-react";
-import { Badge } from "./badge";
+import { Badge } from "../ui/badge";
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
-import { warehouse as warehouseType } from "@/types/warehouse";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Warehouse as WarehouseType } from "@/types/warehouse";
 
-export default function Warehouse({ warehouse }: { warehouse: warehouseType }) {
+export default function Warehouse({ warehouse }: { warehouse: WarehouseType }) {
     return (
         <Card className="gap-4">
             <CardContent className="flex items-center gap-4">

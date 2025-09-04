@@ -1,12 +1,12 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 import { Filter } from "lucide-react";
-import { Label } from "./label";
-import { Input } from "./input";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import { requestOdoo } from "@/actions/request-odoo";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Combobox } from "./combobox";
-import { Switch } from "./switch";
+import { Combobox } from "../ui/combobox";
+import { Switch } from "../ui/switch";
 
 const orderOptions = [
     { value: "desc", label: "Descending" },

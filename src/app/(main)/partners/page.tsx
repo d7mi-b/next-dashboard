@@ -1,16 +1,16 @@
 "use client";
 
 import EmptyResult from "@/components/ui/empty-result";
-import AddPartnerDialog from "@/components/ui/add-partners-dialog";
+import AddPartnerDialog from "@/components/partners/add-partners-dialog";
 import AppPagination from "@/components/ui/app-pagination";
-import EditPartnerDialog from "@/components/ui/edit-partners-dialog";
+import EditPartnerDialog from "@/components/partners/edit-partners-dialog";
 import Navbar from "@/components/ui/navbar";
 import usePartners from "@/hooks/usePartners";
-import PartnersCardView from "@/components/ui/partners-card-view";
+import PartnersCardView from "@/components/partners/partners-card-view";
 import { useState } from "react";
-import PartnersTableView from "@/components/ui/partners-table-view";
+import PartnersTableView from "@/components/partners/partners-table-view";
 import { Switch } from "@/components/ui/switch";
-import PartnersFilters from "@/components/ui/partners-filters";
+import PartnersFilters from "@/components/partners/partners-filters";
 import Loading from "../loading";
 import Error from "@/components/ui/error";
 

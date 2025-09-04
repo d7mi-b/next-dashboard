@@ -1,10 +1,9 @@
 import { SaleOrder } from "@/types/sale-order";
-import { Dispatch, SetStateAction } from "react";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "./table";
-import { Button } from "./button";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Button } from "../ui/button";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
-import { Badge } from "./badge";
+import { Badge } from "../ui/badge";
 
 const columns = [
     {
@@ -55,12 +54,12 @@ export default function SaleOrdersTableView({ saleOrders }: { saleOrders: SaleOr
                 </TableHeader>
                 <TableBody>
                     {
-                        saleOrders.map((saleOrder) => (
+                        saleOrders.map((saleOrder: SaleOrder) => (
                             <TableRow key={saleOrder.id}>
                                 {
                                     columns.map((column) => (
                                         <TableCell key={column.id}>
-                                            {saleOrder[column.accessor] !== "false" ? column.Cell(saleOrder) : <span></span>}
+                                            {saleOrder[column.accessor as keyof SaleOrder] !== "false" ? column.Cell(saleOrder) : <span></span>}
                                         </TableCell>
                                     ))
                                 }

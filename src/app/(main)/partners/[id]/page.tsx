@@ -1,9 +1,9 @@
 import { requestOdoo } from "@/actions/request-odoo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import ChildPartner from "@/components/ui/child-partner";
-import DeletePartnerDialogPage from "@/components/ui/delete-partner-dialog-page";
-import EditPartnerDialogPage from "@/components/ui/edit-partner-dialog-page";
+import ChildPartner from "@/components/partners/child-partner";
+import DeletePartnerDialogPage from "@/components/partners/delete-partner-dialog-page";
+import EditPartnerDialogPage from "@/components/partners/edit-partner-dialog-page";
 import { ChildPartner as ChildPartnerType } from "@/types/child-partner";
 import { Partner as PartnerType } from "@/types/partner";
 import getMimeTypeFromBase64 from "@/utils/getMimeTypeFromBase64";

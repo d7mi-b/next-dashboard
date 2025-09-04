@@ -1,10 +1,10 @@
 import AddWarehouseDialog from "./add-warehouse-dialog";
-import Warehouse from "./warehouse";
+import Warehouse from "../warehouses/warehouse";
 import axios from "axios";
-import { warehouse as warehouseType } from "@/types/warehouse";
+import { Warehouse as WarehouseType } from "@/types/warehouse";
 
 export default async function WarehousesTab() {
-    const warehouses: warehouseType[] = await axios.get(process.env.NEXT_PUBLIC_API_URL + 'api/warehouses', {
+    const warehouses: WarehouseType[] = await axios.get(process.env.NEXT_PUBLIC_API_URL + 'api/warehouses', {
         withCredentials: true,
     })
     .then((res) => res.data)
