@@ -30,10 +30,12 @@ import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { AddPartnerFormSchema } from "@/lib/definitions";
 import { useState } from "react";
-import usePartners from "@/hooks/usePartners";
 
-export default function AddPartnerDialog() {
-    const { create, isSaving } = usePartners();
+export default function AddPartnerDialog({
+    create
+}: {
+    create: (values: z.infer<typeof AddPartnerFormSchema>) => Promise<boolean>
+}) {
     const form = useForm<z.infer<typeof AddPartnerFormSchema>>({
         resolver: zodResolver(AddPartnerFormSchema),
         defaultValues: {
@@ -163,7 +165,7 @@ export default function AddPartnerDialog() {
                             <DialogClose asChild onClick={handleCloseDialog}>
                                 <Button type="button" variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit" disabled={isSaving || form.formState.isSubmitting} onClick={form.handleSubmit(handleSubmit)}>Save changes</Button>
+                            <Button type="submit" disabled={form.formState.isSubmitting} onClick={form.handleSubmit(handleSubmit)}>Save changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </form>

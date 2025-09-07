@@ -37,7 +37,9 @@ export default function Partners() {
         setCity,
         isLoading,
         search,
-        error
+        error,
+        create,
+        update
     } = usePartners();
     const [cardsView, setCardsView] = useState<boolean>(false);
 
@@ -49,7 +51,7 @@ export default function Partners() {
         <main className="p-4 w-full">
             <Navbar 
                 button={
-                    <AddPartnerDialog />
+                    <AddPartnerDialog create={create} />
                 }
                 search={search}
                 setSearch={setSearch}
@@ -102,7 +104,7 @@ export default function Partners() {
                         </section>
 
                         {
-                            partner && <EditPartnerDialog partner={partner} setPartner={setPartner} />
+                            partner && <EditPartnerDialog partner={partner} setPartner={setPartner} update={update} />
                         }
                     </section>
                 }

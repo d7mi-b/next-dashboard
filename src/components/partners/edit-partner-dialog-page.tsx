@@ -30,15 +30,15 @@ import { Input } from "@/components/ui/input";
 import { EditPartnerFormSchema } from "@/lib/definitions";
 import { Partner } from "@/types/partner";
 import { useState } from "react";
-import usePartners from "@/hooks/usePartners";
 import { Edit } from "lucide-react";
+import { toast } from "sonner";
+import { requestOdoo } from "@/actions/request-odoo";
 
 export default function EditPartnerDialogPage({
-    partner,
+    partner
 }: {
-    partner: Partner;
+    partner: Partner
 }) {
-    const { update, isSaving } = usePartners();
     const [image, setImage] = useState<string>("");
     const [open, setOpen] = useState<boolean>(false);
 
@@ -94,10 +94,30 @@ export default function EditPartnerDialogPage({
             values.image_1920 = image;
         }
 
-        const result: boolean = await update(values);
+        let data: any = {
+            "name": values.name,
+            "email": values.email,
+            "phone": values.phone,
+        };
+
+        if (values.image_1920) {
+            data.image_1920 = values.image_1920;
+        }
+
+        const { result, error } = await requestOdoo({
+            "model": "res.partner",
+            "method": "write",
+            "args": [
+                [values.id],
+                data
+            ],
+            "kwargs": {}
+        });
 
         if (result) {
             handleClose();
+        } else {
+            toast.error(error ?? "Failed to update partner.");
         }
     }
 
@@ -165,7 +185,7 @@ export default function EditPartnerDialogPage({
                             <DialogClose asChild onClick={handleClose}>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit" disabled={isSaving} onClick={form.handleSubmit(handleSubmit)}>Save changes</Button>
+                            <Button type="submit" disabled={form.formState.isSubmitting} onClick={form.handleSubmit(handleSubmit)}>Save changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </form>

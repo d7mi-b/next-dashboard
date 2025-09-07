@@ -27,25 +27,26 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AddPartnerFormSchema } from "@/lib/definitions";
+import { EditPartnerFormSchema } from "@/lib/definitions";
 import { Partner } from "@/types/partner";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import usePartners from "@/hooks/usePartners";
 
 export default function EditPartnerDialog({
     partner,
-    setPartner
+    setPartner,
+    update,
 }: {
     partner: Partner;
     setPartner: Dispatch<SetStateAction<Partner | undefined>>;
+    update: (values: z.infer<typeof EditPartnerFormSchema>) => Promise<boolean>
 }) {
-    const { update, isSaving } = usePartners();
     const [currentOpen, setCurrentOpen] = useState<boolean>(false);
     const [image, setImage] = useState<string>("");
 
-    const form = useForm<z.infer<typeof AddPartnerFormSchema>>({
-        resolver: zodResolver(AddPartnerFormSchema),
+    const form = useForm<z.infer<typeof EditPartnerFormSchema>>({
+        resolver: zodResolver(EditPartnerFormSchema),
         defaultValues: {
+            id: partner?.id ? partner.id : 0,
             name: partner?.name ? partner.name : "",
             email: partner?.email ? partner.email : "",
             phone: partner?.phone ? partner.phone : "",
@@ -97,7 +98,7 @@ export default function EditPartnerDialog({
         setImage("");
     }
 
-    const handleSubmit = async (values: z.infer<typeof AddPartnerFormSchema>) => {
+    const handleSubmit = async (values: z.infer<typeof EditPartnerFormSchema>) => {
         values.image_1920 = image;
 
         if (!values.image_1920) {
@@ -171,7 +172,7 @@ export default function EditPartnerDialog({
                             <DialogClose asChild onClick={handleClose}>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit" disabled={isSaving} onClick={form.handleSubmit(handleSubmit)}>Save changes</Button>
+                            <Button type="submit" disabled={form.formState.isSubmitting} onClick={form.handleSubmit(handleSubmit)}>Save changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </form>
