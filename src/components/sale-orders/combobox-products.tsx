@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check, ChevronsUpDown, ClosedCaption } from "lucide-react"
+import { Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -23,12 +23,16 @@ import { Product } from "@/types/product"
 export function ComboboxProducts({
     items,
     addItem,
+    value,
+    handleItemChange
 }: {
     items: Product[],
     addItem: (item: Product) => void,
+    value?: number,
+    handleItemChange?: (item: Product, itemId: number) => void
 }) {
     const [open, setOpen] = React.useState(false);
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [currentValue, setCurrentValue] = React.useState<string>("");
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Escape") {
@@ -49,43 +53,67 @@ export function ComboboxProducts({
             const item = items.find((item) => item.name.startsWith(name) );
 
             if (item) {
-                addItem(item);
+                if (handleItemChange) {
+                    handleItemChange(item, Number(value));
+                } else {
+                    addItem(item);
+                }
             }
         }
     };
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
-            <Command className="w-[350px]">
-                <PopoverTrigger asChild>
-                    <CommandInput
-                        placeholder="Search product..."
-                        className="h-9 p-0"
-                        onKeyDown={handleKeyDown}
-                        onFocus={() => setOpen(true)}
-                        onBlur={() => setOpen(false)}
-                    />
-                </PopoverTrigger>
-                <PopoverContent className="min-w-[200px] p-0">
-                    <CommandList className="w-full">
-                        <CommandEmpty>No item found.</CommandEmpty>
-                        <CommandGroup className="w-full">
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between"
+                >
+                    {value != undefined
+                        ? items.find((item) => String(item.id) === String(value))?.name
+                        : "Select product..."}
+                    <ChevronsUpDown className="opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+                <Command>
+                    <CommandInput placeholder="Search item..." className="h-9" />
+                    <CommandList>
+                        <CommandEmpty>No products found.</CommandEmpty>
+                        <CommandGroup>
                             {items.map((item) => (
                                 <CommandItem
-                                    key={item.id}
-                                    value={item.name}
+                                    key={String(item.id)}
+                                    value={String(item.name)}
                                     onSelect={(currentValue) => {
-                                        addItem(item);
+                                        // if (String(value) === currentValue) {
+                                        //     setValue(undefined);
+                                        // } else {
+                                        //     setValue(item.id)
+                                        // }
+                                        if (handleItemChange) {
+                                            handleItemChange(item, Number(value));
+                                        } else {
+                                            addItem(item);
+                                        }
                                         setOpen(false)
                                     }}
                                 >
                                     {item.name}
+                                <Check
+                                    className={cn(
+                                        "ml-auto",
+                                        String(value) === String(item.id) ? "opacity-100" : "opacity-0"
+                                    )}
+                                />
                                 </CommandItem>
                             ))}
                         </CommandGroup>
                     </CommandList>
-                </PopoverContent>
-            </Command>
+                </Command>
+            </PopoverContent>
         </Popover>
     )
 }

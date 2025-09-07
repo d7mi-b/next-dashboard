@@ -1,9 +1,7 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
-import { ComboboxProducts } from "@/components/ui/combobox-products";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -14,24 +12,28 @@ import useCreateSalesOrder from "@/hooks/useCreateSalesOrder";
 import useCreateSalesStore from "@/hooks/useCreateSalesStore";
 import { CreateSaleOrderFormSchema } from "@/lib/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash } from "lucide-react";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
+import RowProductTable from "@/components/sale-orders/row-product-table";
+import { ComboboxProducts } from "@/components/sale-orders/combobox-products";
+import { Product } from "@/types/product";
+import { requestOdoo } from "@/actions/request-odoo";
+import { Warehouse } from "@/types/warehouse";
 
 export default function Page() {
-    const { 
-        customers, 
-        warehouses,
-        products,
+    const [products, setProducts] = useState<Product[]>([]);
+    const [customers, setCustomers] = useState([]);
+    const [warehouses, setwarehouses] = useState<any[]>([]);
+
+    const {
         items,
         addItem,
-        handleQuantityChange,
-        removeItem,
-        create
+        create,
     } = useCreateSalesOrder();
+
     const total: number = useCreateSalesStore((state: any) => state.total);
     const columns = useCreateSalesStore((state: any) => state.columns);
     const customer: number = useCreateSalesStore((state: any) => state.customer);
@@ -40,6 +42,8 @@ export default function Page() {
     const setwarehouse = useCreateSalesStore((state: any) => state.setwarehouse);
     const date: Date = useCreateSalesStore((state: any) => state.date);
     const setDate = useCreateSalesStore((state: any) => state.setDate);
+
+    const [editable, setEditable] = useState<number>();
 
     const form = useForm<z.infer<typeof CreateSaleOrderFormSchema>>({
         resolver: zodResolver(CreateSaleOrderFormSchema),
@@ -51,10 +55,79 @@ export default function Page() {
     });
 
     useEffect(() => {
+        console.log("useEffect getProducts start");
+        getProducts();
+        getCustomers();
+        getwarehouses();
+        console.log("useEffect getProducts done");
+    }, []);
+
+    useEffect(() => {
         form.setValue("customer", customer);
         form.setValue("warehouse", warehouse);
         form.setValue("date", new Date(date));
     }, [customer, warehouse, date]);
+
+    const getProducts = async () => {
+        const { result } = await requestOdoo({
+            "model": "product.template",
+            "method": "search_read",
+            "args": [
+                [
+                    ["sale_ok", "=", true]
+                ],
+                ["name", "list_price", "taxes_id", "default_code", "product_variant_id"]
+            ],
+            "kwargs": {}    
+        });
+
+        if (result) {
+            setProducts(result);
+        }
+    }
+
+    async function getCustomers() {
+        const { result } = await requestOdoo({
+            "model": "res.partner",
+            "method": "search_read",
+            "args": [
+                [
+                    ["supplier_rank", "=", 0]
+                ],
+                ["name", "email", "phone", "mobile", "create_date", "image_1920", "customer_rank", "supplier_rank", "child_ids", "is_company"]
+            ],
+            "kwargs": {}
+        });
+
+        if (result) {
+            setCustomers(result);
+        }
+    }
+
+    async function getwarehouses() {
+        const result: Warehouse[] = [
+            {
+                id: 1,
+                name: "warehouse 1",
+                address: "123 Main Street, Anytown, USA",
+                isDefault: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                items: 10,
+            },
+            {
+                id: 2,
+                name: "warehouse 2",
+                address: "456 Main Street, Anytown, USA",
+                isDefault: false,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                items: 20,
+            }
+        ]
+
+        setwarehouses(result);
+    }
 
     const fields = [
         {
@@ -203,46 +276,7 @@ export default function Page() {
                         <TableBody>
                             {
                                 items.map((item) => (
-                                    <TableRow key={item.id}>
-                                        {
-                                            columns.filter((c: any) => c.visibility).map((column: any, index: number) => {
-                                                if (column.key === "taxes") {
-                                                    return (
-                                                        <TableCell key={index}>
-                                                            {
-                                                                item.taxes && item.taxes.length > 0 ? item.taxes.map((tax) => <Badge key={tax.id}>{tax.name}</Badge>) : "-"
-                                                            }
-                                                        </TableCell>
-                                                    )
-                                                } else if (column.key === "quantity") {
-                                                    return (
-                                                        <TableCell key={index}>
-                                                            <Input 
-                                                                min={1} 
-                                                                type="number" 
-                                                                className="w-[100px]" 
-                                                                value={item.quantity} 
-                                                                onChange={(e) => {
-                                                                    const quantity = Number(e.target.value);
-
-                                                                    if (quantity >= 1) {
-                                                                        handleQuantityChange(item, quantity)
-                                                                    }
-                                                                }} 
-                                                            />
-                                                        </TableCell>
-                                                    )
-                                                }
-
-                                                return <TableCell key={index}>{item[column.key]}</TableCell>
-                                            })
-                                        }
-                                        <TableCell>
-                                            <Button variant="outline" className="cursor-pointer hover:text-red-600" onClick={() => removeItem(item)}>
-                                                <Trash />
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
+                                    <RowProductTable columns={columns} products={products} item={item} key={item.id} editable={editable!} setEditable={setEditable} />
                                 ))
                             }
                             <TableRow>

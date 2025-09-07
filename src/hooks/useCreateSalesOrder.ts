@@ -15,80 +15,9 @@ export default function useCreateSalesOrder() {
     const date: Date = useCreateSalesStore((state: any) => state.date ?? new Date());
     const reset = useCreateSalesStore((state: any) => state.reset);
 
-    const [customers, setCustomers] = useState<Partner[]>([]);
-    const [warehouses, setwarehouses] = useState<any[]>([]);
-    const [products, setProducts] = useState<Product[]>([]);
-
-    useEffect(() => {
-        getCustomers();
-        getwarehouses();
-        getProducts();
-    }, []);
-
     useEffect(() => {
         calculateTotal();
     }, [items]);
-
-    async function getCustomers() {
-        const { result } = await requestOdoo({
-            "model": "res.partner",
-            "method": "search_read",
-            "args": [
-                [
-                    ["supplier_rank", "=", 0]
-                ],
-                ["name", "email", "phone", "mobile", "create_date", "image_1920", "customer_rank", "supplier_rank", "child_ids", "is_company"]
-            ],
-            "kwargs": {}
-        });
-
-        if (result) {
-            setCustomers(result);
-        }
-    }
-
-    async function getwarehouses() {
-        const result: Warehouse[] = [
-            {
-                id: 1,
-                name: "warehouse 1",
-                address: "123 Main Street, Anytown, USA",
-                isDefault: true,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                items: 10,
-            },
-            {
-                id: 2,
-                name: "warehouse 2",
-                address: "456 Main Street, Anytown, USA",
-                isDefault: false,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                items: 20,
-            }
-        ]
-
-        setwarehouses(result);
-    }
-
-    async function getProducts() {
-        const { result } = await requestOdoo({
-            "model": "product.template",
-            "method": "search_read",
-            "args": [
-                [
-                    ["sale_ok", "=", true]
-                ],
-                ["name", "list_price", "taxes_id", "default_code", "product_variant_id"]
-            ],
-            "kwargs": {}
-        });
-
-        if (result) {
-            setProducts(result);
-        }
-    }
 
     async function addItem (item: any) {
         if (items.find(i => i.id === item.id)) {
@@ -127,6 +56,45 @@ export default function useCreateSalesOrder() {
         updated.tax_amount = taxAmount;
 
         setItems(items.map(i => i.id === updated.id ? updated : i));
+    }
+
+    function handlePriceChange (item: any, list_price: number) {
+        const updated = {
+            ...item,
+            list_price,
+            price_subtotal: list_price * item.quantity,
+        };
+
+        const { total, taxAmount } = calculateTotalItem(updated);
+
+        updated.price_total = total;
+        updated.tax_amount = taxAmount;
+
+        setItems(items.map(i => i.id === updated.id ? updated : i));
+    }
+
+    async function handleItemChange (item: Product, itemId: number) {
+        if (items.find(i => i.id === item.id)) {
+            toast.warning("Item already added.");
+            return;
+        }
+
+        const updated = {
+            ...item,
+            quantity: 1,
+            price_subtotal: item.list_price,
+        };
+
+        const taxes = await getTaxes(item);
+
+        updated.taxes = taxes;
+
+        const { total, taxAmount } = calculateTotalItem(updated);
+
+        updated.price_total = total;
+        updated.tax_amount = taxAmount;
+
+        setItems(items.map(i => i.id === itemId ? updated : i));
     }
 
     async function getTaxes (item: any) {
@@ -246,13 +214,12 @@ export default function useCreateSalesOrder() {
     }
 
     return {
-        customers,
-        warehouses,
-        products,
         items,
         addItem,
         handleQuantityChange,
+        handlePriceChange,
         removeItem,
-        create
+        create,
+        handleItemChange
     }
 }
