@@ -13,6 +13,8 @@ import { Switch } from "@/components/ui/switch";
 import PartnersFilters from "@/components/partners/partners-filters";
 import Loading from "../loading";
 import Error from "@/components/ui/error";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 export default function Partners() {
     const { 
@@ -39,7 +41,8 @@ export default function Partners() {
         search,
         error,
         create,
-        update
+        update,
+        exportPartners
     } = usePartners();
     const [cardsView, setCardsView] = useState<boolean>(false);
 
@@ -84,6 +87,12 @@ export default function Partners() {
                                 order={order}
                                 setOrder={setOrder}
                             />
+                        </section>
+
+                        <section className="flex items-center gap-2">
+                            <Button onClick={exportPartners}>
+                                <Download />
+                            </Button>
                         </section>
                     </section>
                 </header>

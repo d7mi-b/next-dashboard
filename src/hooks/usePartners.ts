@@ -1,5 +1,6 @@
 import { requestOdoo } from "@/actions/request-odoo";
 import { AddPartnerFormSchema, EditPartnerFormSchema } from "@/lib/definitions";
+import { exportExcel } from "@/services/excel";
 import { Partner } from "@/types/partner";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -206,6 +207,39 @@ export default function usePartners() {
         }
     }
 
+    async function exportPartners() {
+        setIsLoading(true);
+
+        const data = [
+            {
+                id: 1,
+                name: 'John Doe',
+                email: 'john.doe@example.com',
+                phone: '123-456-7890',
+                address: '123 Main St, Anytown, USA',
+                city: 'Anytown',
+                state: 'USA',
+                zip: '12345',
+                country: 'USA',
+            },
+            {
+                id: 2,
+                name: 'Jane Smith',
+                email: 'jane.smith@example.com',
+                phone: '555-123-4567',
+                address: '456 Elm St, Anytown, USA',
+                city: 'Anytown',
+                state: 'USA',
+                zip: '54321',
+                country: 'USA',
+            },
+        ];
+
+        exportExcel(data, "partners");
+
+        setIsLoading(false);
+    }
+
     return {
         partners,
         page,
@@ -231,6 +265,7 @@ export default function usePartners() {
         setCity,
         isLoading,
         search,
-        error
+        error,
+        exportPartners
     }
 }

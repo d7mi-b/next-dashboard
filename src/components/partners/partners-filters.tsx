@@ -81,8 +81,10 @@ export default function PartnersFilters({
 
     return (
         <Popover>
-            <PopoverTrigger>
-                <Filter />
+            <PopoverTrigger asChild> 
+                <Button variant="outline">
+                    <Filter />
+                </Button>
             </PopoverTrigger>
             <PopoverContent className="w-100 bg-white shadow-lg rounded-md p-6 text-sm z-10">
                 <div className="grid gap-4">
@@ -93,29 +95,29 @@ export default function PartnersFilters({
                         </p>
                     </div>
                 <div className="grid gap-2">
-                    <div className="grid grid-cols-3 items-center gap-4">
+                    <div className="grid grid-cols-2 items-center gap-4">
                         <Label htmlFor="width">Country</Label>
                         <Combobox items={countries} value={country} setValue={setCountry as Dispatch<SetStateAction<string | number | undefined>>} />
                     </div>
-                    <div className="grid grid-cols-3 items-center gap-4">
+                    <div className="grid grid-cols-2 items-center gap-4">
                         <Label htmlFor="width">City</Label>
                         <Combobox items={cities} value={city} setValue={setCity as Dispatch<SetStateAction<string | number | undefined>>} />
                     </div>
-                    <div className="grid grid-cols-3 items-center gap-4">
+                    <div className="grid grid-cols-2 items-center gap-4">
                         <Label htmlFor="height">Is Customer</Label>
                         <Switch
                             checked={isCustomer}
                             onCheckedChange={() => setIsCustomer(!isCustomer)}
                         />
                     </div>
-                    <div className="grid grid-cols-3 items-center gap-4">
+                    <div className="grid grid-cols-2 items-center gap-4">
                         <Label htmlFor="height">Is Supplier</Label>
                         <Switch
                             checked={isSupplier}
                             onCheckedChange={() => setIsSupplier(!isSupplier)}
                         />
                     </div>
-                    <div className="grid grid-cols-3 items-center gap-4">
+                    <div className="grid grid-cols-2 items-center gap-4">
                         <Label htmlFor="height">Order By Created Date</Label>
                         <Combobox items={orderOptions} value={order} setValue={setOrder as Dispatch<SetStateAction<string | number | undefined>>} keyLabel="label" keyValue="value" />
                     </div>
