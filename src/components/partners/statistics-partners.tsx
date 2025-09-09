@@ -74,30 +74,32 @@ export default function StatisticsPartners() {
             }
         });
 
-        const salesByDate = new Map();
-        saleOrders.forEach((d: SaleOrder) => {
+        if (saleOrders) {
+            const salesByDate = new Map();
+            saleOrders.forEach((d: SaleOrder) => {
             const dateKey = new Date(d.date_order).toLocaleDateString();
             const amount = d.amount_total;
             const state = d.state === 'sale' ? 'confirmed' : 'draft';
 
-            if (!salesByDate.has(dateKey)) {
-                salesByDate.set(dateKey, { date: dateKey, amount: amount, state: state });
-            }
+                if (!salesByDate.has(dateKey)) {
+                    salesByDate.set(dateKey, { date: dateKey, amount: amount, state: state });
+                }
 
-            if (!salesByDate.get(dateKey)[state]) {
-                salesByDate.get(dateKey)[state] = 0;
-            }
+                if (!salesByDate.get(dateKey)[state]) {
+                    salesByDate.get(dateKey)[state] = 0;
+                }
 
-            salesByDate.get(dateKey)[state] += amount;
-        });
+                salesByDate.get(dateKey)[state] += amount;
+            });
 
-        // Convert map to a sorted array for Recharts
-        const aggregatedData = Array.from(salesByDate.values())
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            // Convert map to a sorted array for Recharts
+            const aggregatedData = Array.from(salesByDate.values())
+                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-        console.log(aggregatedData);
+            console.log(aggregatedData);
 
-        setSaleOrdersAmount(aggregatedData);
+            setSaleOrdersAmount(aggregatedData);
+        }
     }
 
     return (

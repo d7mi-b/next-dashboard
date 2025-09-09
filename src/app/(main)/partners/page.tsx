@@ -14,7 +14,7 @@ import PartnersFilters from "@/components/partners/partners-filters";
 import Loading from "../loading";
 import Error from "@/components/ui/error";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Printer } from "lucide-react";
 
 export default function Partners() {
     const { 
@@ -42,7 +42,8 @@ export default function Partners() {
         error,
         create,
         update,
-        exportPartners
+        exportPartners,
+        generatePdf
     } = usePartners();
     const [cardsView, setCardsView] = useState<boolean>(false);
 
@@ -87,6 +88,12 @@ export default function Partners() {
                                 order={order}
                                 setOrder={setOrder}
                             />
+                        </section>
+
+                        <section className="flex items-center gap-2">
+                            <Button variant="outline" onClick={generatePdf}>
+                                <Printer />
+                            </Button>
                         </section>
 
                         <section className="flex items-center gap-2">

@@ -2,6 +2,7 @@ import { requestOdoo } from "@/actions/request-odoo";
 import { AddPartnerFormSchema, EditPartnerFormSchema } from "@/lib/definitions";
 import { exportExcel } from "@/services/excel";
 import { Partner } from "@/types/partner";
+import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
@@ -210,34 +211,94 @@ export default function usePartners() {
     async function exportPartners() {
         setIsLoading(true);
 
-        const data = [
-            {
-                id: 1,
-                name: 'John Doe',
-                email: 'john.doe@example.com',
-                phone: '123-456-7890',
-                address: '123 Main St, Anytown, USA',
-                city: 'Anytown',
-                state: 'USA',
-                zip: '12345',
-                country: 'USA',
-            },
-            {
-                id: 2,
-                name: 'Jane Smith',
-                email: 'jane.smith@example.com',
-                phone: '555-123-4567',
-                address: '456 Elm St, Anytown, USA',
-                city: 'Anytown',
-                state: 'USA',
-                zip: '54321',
-                country: 'USA',
-            },
-        ];
+        let domain = [];
+    
+        if (search) {
+            domain.push('|', '|', ['name', 'ilike', search], ['email', 'ilike', search], ['phone', 'ilike', search]);
+        }
 
-        exportExcel(data, "partners");
+        if (city) {
+            domain.push(['city', 'ilike', city]);
+        }
+        
+        if (country) {
+            domain.push(['country_id', 'ilike', country]);
+        }
+        
+        // Correct logic for customer and supplier rank filters.
+        // Use an OR condition if both are checked to find partners that are either one.
+        if (isCustomer && isSupplier) {
+            domain.push('|', ['customer_rank', '>', 0], ['supplier_rank', '>', 0]);
+        } else if (isCustomer) {
+            domain.push(['customer_rank', '>', 0]);
+        } else if (isSupplier) {
+            domain.push(['supplier_rank', '>', 0]);
+        }
 
-        setIsLoading(false);
+        const { result, error } = await requestOdoo({
+            "model": "res.partner",
+            "method": "search_read",
+            "args": [
+                domain,
+                ["name", "email", "phone", "mobile", "create_date", "image_1920", "customer_rank", "supplier_rank", "child_ids", "is_company"]
+            ],
+            "kwargs": {
+                "order": `create_date ${order}`
+            }
+        });
+
+        if (result) {
+            const data = result.map((partner: Partner) => ({
+                id: partner.id,
+                name: partner.name,
+                email: partner.email ? partner.email : "",
+                phone: partner.phone ? partner.phone : "",
+                address: partner.address ? partner.address : "",
+                city: partner.city ? partner.city : "",
+                country: partner.country_id ? partner.country_id[1] : "",
+                "created date": partner.create_date ? new Date(partner.create_date).toDateString() : "",
+            }));
+
+            exportExcel(data, "partners");
+
+            setIsLoading(false);
+
+            toast.success("Partner has been exported successfully.");
+        } else {
+            setIsLoading(false);
+            toast.error(error ?? "Failed to export partners.");
+        }
+    }
+
+    async function generatePdf () {
+        const documentId = new Date().getTime();
+
+        try {
+            const res = await axios.post("api/pdf/generate", {
+                documentId
+            }, {
+                responseType: 'arraybuffer',
+            });
+
+            if (res.status === 200) {
+                toast.success("PDF generated successfully");
+
+                const blob = new Blob([res.data], { type: "application/pdf" });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `document-${documentId}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                toast("Download started");
+            } else {
+                toast.error("Failed to generate PDF.");
+            }
+        } catch (error) {
+            toast.error("Something went wrong.");
+        }
     }
 
     return {
@@ -266,6 +327,7 @@ export default function usePartners() {
         isLoading,
         search,
         error,
-        exportPartners
+        exportPartners,
+        generatePdf
     }
 }
